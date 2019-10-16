@@ -1,0 +1,37 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Offers</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content  *ngIf="visible" class="offer-page">
+    <ion-grid style="padding-bottom: 50px;">
+        <ion-row *ngIf="offer_list && offer_list.length">
+            <ion-col col-12  *ngFor="let offer of offer_list let i=index">
+
+                <div class="offer-sec">
+                    <ion-row>
+                        <ion-col col-4>
+                            <div class="offer-value">
+                                <p *ngIf="offer.discount_type=='percent'">{{offer.amount}} %</p>
+                                <p *ngIf="offer.discount_type!='percent'">{{offer.amount}}</p>
+                            </div>
+                        </ion-col>
+                        <ion-col col-8>
+                            <h3>{{offer.description}}</h3>
+                            <p >{{offer.code}}</p>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col col-12 class="offer-bottom">
+                            <p style="padding-bottom: 5px;">Offer expires on {{offer.date_expires | date:'dd-MM-yyyy h:mm:ss a'}}</p>
+                        </ion-col>
+                    </ion-row>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+
+<ion-footer>
+    <page-footer></page-footer>
+</ion-footer>

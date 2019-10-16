@@ -1,0 +1,7 @@
+{
+  "name": "dadis",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

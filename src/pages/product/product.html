@@ -1,0 +1,59 @@
+<ion-header>
+    <ion-navbar>
+        <!-- <button ion-button menuToggle icon-only></button> -->
+        <ion-title>Products</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content  *ngIf="visible" class="product-page">
+    <div class="header-banner"  style="margin-top: 56px;">
+        <img src="assets/imgs/banner.png" class="slide-image" />
+    </div>
+    <div >
+        <ion-grid >
+            <ion-row *ngIf="product_list && product_list.length>0" class="page-heading">
+                <ion-col col-10  ><ion-label class="page-heading-text">{{category_name}}</ion-label></ion-col>
+                <ion-col col-2 >
+                    <ion-select [(ngModel)]="sort_option" interface="popover"  (ionChange)="stpSelect()">
+                    <ion-option value="Latest">Latest</ion-option>
+                    <ion-option value="Price - Low to High">Price - Low to High</ion-option>
+                    <ion-option value="Price - High to Low">Price - High to Low</ion-option>
+                    </ion-select>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+    <ion-grid style="padding-bottom: 50px;">
+        <ion-row *ngIf="product_list && product_list.length>0">
+            <ion-col col-12  *ngFor="let product of product_list let i=index" (click)="gotoProduct(product)">
+                <div class="product-sec">
+                    <img [src]="product.images.length>0?product.images[0].src:'assets/imgs/placeholder.png'">
+                    <div class="product-text"> 
+                        <h3>{{product.name}}</h3>
+                        <p style="padding-bottom: 5px;">{{product.short_description}}</p>
+                        <p style="padding-bottom: 5px;" *ngIf="product.product_variation.length>0">
+                            <span class="item-price" *ngIf="product.product_variation[0].price"><i class="fa fa-inr"></i>{{product.product_variation[0].price}}</span>
+                            <span class="item-price-discount" *ngIf="product.product_variation[0].regular_price > product.product_variation[0].price"><i class="fa fa-inr"></i>{{product.product_variation[0].regular_price}}</span>
+                            <span class="item-price-discount-value" *ngIf="product.product_variation[0].regular_price > product.product_variation[0].price">( - {{getDiscount(product.product_variation[0].price,product.product_variation[0].regular_price)}} )</span>
+                        </p>
+                        <p style="padding-bottom: 5px;" *ngIf="product.product_variation.length==0">
+                            <span class="item-price" *ngIf="product.price"><i class="fa fa-inr"></i>{{product.price}}</span>
+                            <span class="item-price-discount" *ngIf="product.regular_price > product.price"><i class="fa fa-inr"></i>{{product.regular_price}}</span>
+                            <span class="item-price-discount-value" *ngIf="product.regular_price > product.price">( - {{getDiscount(product.price,product.regular_price)}} )</span>
+                        </p>
+                    </div>
+                </div>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="product_list && product_list.length==0">
+            <ion-col col-12  >
+                <div class="product-sec">
+                    <span>Sorry! No Item listed.</span>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+
+<ion-footer>
+    <page-footer></page-footer>
+</ion-footer>

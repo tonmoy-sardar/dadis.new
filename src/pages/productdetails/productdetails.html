@@ -1,0 +1,94 @@
+<ion-header>
+    <ion-navbar>
+        <!-- <button ion-button menuToggle icon-only></button> -->
+        <ion-title>Product Details</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content  *ngIf="visible" >
+    <div class="header-banner" style="margin-top: 56px;" *ngIf="product_details.images.length>0" >
+        <ion-slides pager class="home-slide" autoplay="3000" loop>
+            <ion-slide *ngFor="let galleryImage of product_details.images; let i = index">
+                <img [src]="galleryImage.src" class="slide-image" (click)="openModal(i)" />
+            </ion-slide>
+        </ion-slides>
+    </div>
+    <ion-grid class="product-details-page" style="padding-bottom: 50px;">
+        <ion-row >
+            <ion-col col-12 >
+                <div class="product-sec">
+                    <h3>{{product_details.name}}</h3>
+                    <p style="padding-bottom: 5px;" [innerHTML]="product_details.short_description"></p>
+
+                    <p style="padding-bottom: 5px;" *ngIf="product_details.product_variation.length>0">
+                        <span class="item-price" *ngIf="product_details.product_variation[0].sale_price"><i class="fa fa-inr"></i>{{product_details.product_variation[0].sale_price}}</span>
+                        <span class="item-price-discount" *ngIf="product_details.product_variation[0].regular_price > product_details.product_variation[0].sale_price"><i class="fa fa-inr"></i>{{product_details.product_variation[0].regular_price}}</span>
+                        <span class="item-price-discount-value" *ngIf="product_details.product_variation[0].regular_price > product_details.product_variation[0].sale_price">( - {{getDiscount(product_details.product_variation[0].sale_price,product_details.product_variation[0].regular_price)}} )</span>
+                    </p>
+                    <p style="padding-bottom: 5px;" *ngIf="product_details.product_variation.length==0">
+                        <span class="item-price" *ngIf="product_details.sale_price"><i class="fa fa-inr"></i>{{product_details.sale_price}}</span>
+                        <span class="item-price-discount" *ngIf="product_details.regular_price > product_details.sale_price"><i class="fa fa-inr"></i>{{product_details.regular_price}}</span>
+                        <span class="item-price-discount-value" *ngIf="product_details.regular_price > product_details.sale_price">( - {{getDiscount(product_details.sale_price,product_details.regular_price)}} )</span>
+                    </p>
+                    <!-- <p style="padding-bottom: 5px;">
+                        <span class="item-price" *ngIf="product_details.price"><i class="fa fa-inr"></i>{{product_details.price}}</span>
+                        <span class="item-price-discount" *ngIf="product_details.regular_price > product_details.price"><i class="fa fa-inr"></i>{{product_details.regular_price}}</span>
+                        <span class="item-price-discount-value" *ngIf="product_details.regular_price > product_details.price">( - {{getDiscount(product_details.price,product_details.regular_price)}} )</span>
+                    </p> -->
+                </div>
+            </ion-col>
+        </ion-row>
+        <div *ngFor="let attribute of product_details.attributes let i=index">
+            <ion-row class="product-sec" style="margin-bottom: 5px;" *ngIf="attribute.name=='Size'">
+                <ion-col col-12 >
+                    <div style="border-bottom: 1px solid #cccccc;">
+                        <h3>Specification</h3>
+                    </div>
+                </ion-col>
+                <ion-col col-12 >
+                    <div style="padding-top: 10px;" >
+                        <p class="section-header">Select Size</p>
+                        <div class="dot-size" (click)="selectSize(size,j);"  *ngFor="let size of attribute.options let j=index" [ngStyle]=" j === activeIndex ? {'background-color': '#333b45'} : {'background-color': ''} ">
+                            <span>{{size}}</span>
+                        </div>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </div>
+        
+        <ion-row class="product-btn-sec" style="margin-bottom: 5px;" >
+            <ion-col col-6  style="border-right: 1px solid #cccccc;">
+                <div class="btn-add" *ngIf="!product_details.isCart" (click)="addToCart(product_details)"> Add <span class="span-right">+</span></div>
+                <div class="btn-add" *ngIf="product_details.isCart"><span class="span-left" (click)="decrement(product_details)">-</span> {{product_details.quantity}} <span class="span-right" (click)="increment(product_details)">+</span></div>
+            </ion-col>
+            <ion-col col-6 >
+                <div class="btn-buy"(click)="buyNow(product_details)"> Buy Now </div>
+            </ion-col>
+        </ion-row>
+        
+        <ion-row class="product-sec" *ngIf="product_details.attributes && product_details.attributes.length>0">
+            <ion-col col-12 >
+                <div style="border-bottom: 1px solid #cccccc;">
+                    <h3>Details</h3>
+                </div>
+            </ion-col>
+            <ion-col col-12  >
+                <div *ngFor="let attribute of product_details.attributes let i=index">
+                    <ion-row *ngIf="attribute.name!='Size'">
+                        <ion-col col-6  >
+                            <p style="padding-bottom: 5px;">{{attribute.name}}</p>
+                        </ion-col>
+                        <ion-col col-6 style="text-align: right">
+                            <p style="padding-bottom: 5px;">{{attribute.options[0]}}</p>
+                        </ion-col>
+                    </ion-row>
+                </div>
+            </ion-col>
+        </ion-row>
+        
+    </ion-grid>
+    
+</ion-content>
+
+<ion-footer>
+    <page-footer></page-footer>
+</ion-footer>

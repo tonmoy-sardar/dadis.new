@@ -1,0 +1,61 @@
+<ion-header>
+    <ion-navbar>
+        <!-- <button ion-button menuToggle icon-only></button> -->
+        <ion-title>Cart page</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content  *ngIf="visible" class="cart-page">
+    <ion-grid style="padding-bottom: 50px;">
+        <ion-row *ngIf="customer_cart_data && customer_cart_data.length>0">
+            <ion-col col-12  *ngFor="let cart_data of customer_cart_data let i=index" >
+                <div class="product-sec">
+                    <img [src]="cart_data.image_small?cart_data.image_small:'assets/imgs/placeholder.png'">
+                    <div class="product-text"> 
+                        <h3>{{cart_data.product_name}}</h3>
+                        <p style="padding-bottom: 5px;" [innerHTML]="cart_data.description"></p>
+                        <p style="padding-bottom: 10px;">
+                            <span class="item-price" *ngIf="cart_data.price"><i class="fa fa-inr"></i>{{cart_data.price}}</span>
+                            <span class="item-price-discount" *ngIf="cart_data.regular_price > cart_data.price"><i class="fa fa-inr"></i>{{cart_data.regular_price}}</span>
+                            <span class="item-price-discount-value" *ngIf="cart_data.regular_price > cart_data.price">( - {{getDiscount(cart_data.price,cart_data.regular_price)}} )</span>
+                        </p>
+                        <div style="width: 100%">
+                                <div style="padding-bottom: 5px;float: left;"><p  class="btn-add"><span class="span-left" (click)="decrement(i)">-</span> {{cart_data.quantity}} <span class="span-right" (click)="increment(i)">+</span></p></div>
+                                <div style="padding-bottom: 5px;float: right;" ><p  class="btn-remove" (click)="remove(cart_data.product_id,i)"><i class="fa fa-trash-o" aria-hidden="true"></i></p></div>
+                        </div>
+                        
+                        
+                    
+                        <!-- <p class="btn-buy"> Buy Now </p> -->
+                               
+                    </div>
+                </div>
+            </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="customer_cart_data && customer_cart_data.length>0">
+            <ion-col col-12 >
+                <div class="check-out-sec">
+                    <p >GRAND TOTAL (INCLUDED TAX)</p>
+                    <p ><i class="fa fa-inr"></i>{{total_item_price}}</p>
+                    <!-- <button class="btn-checkout">CHECKOUT NOW</button> -->
+                    <button class="btn-checkout" (click)="gotoPage('CheckoutPage')">CHECKOUT NOW</button>
+                </div>
+            </ion-col>
+        </ion-row>
+    
+        
+        <ion-row *ngIf="customer_cart_data && customer_cart_data.length==0">
+            <ion-col col-12  >
+                <div class="cart-no-data" style="text-align: center">
+                    <img src="assets/imgs/nocart.png" class="slide-image" style="text-align: center; height: 100px;" />
+                    <p>Sorry! Your cart is empty.</p>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+   
+</ion-content>
+
+<ion-footer>
+    <page-footer></page-footer>
+</ion-footer>

@@ -1,0 +1,79 @@
+<ion-header>
+    <ion-navbar>
+        <!-- <button ion-button menuToggle icon-only></button> -->
+        <ion-title>My Profile</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content  *ngIf="visible" class="profile-page">
+    
+    <div style="margin-top: 56px">
+        <ion-grid>
+            <ion-row >
+                <ion-col col-12 class="profile-sec">
+                    <div style="padding-top: 10px"><img src="assets/imgs/placeholder.png" class="slide-image" style="height: 100px; border-radius: 50%;"  /></div>
+                    <p>{{logged_user_name}}</p>
+                    <p>{{logged_user_email}}</p>
+                    <p>{{logged_user_contact_no}}</p>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+    
+    <div style="padding:5px;">
+        <div class="relative-sec">
+            <ion-grid>
+                <ion-row>
+                    <ion-col col-4 style="text-align: center">
+                        <button  (click)="gotoPage('ContactusPage')">
+                            <i class="fa fa-home" aria-hidden="true"></i>
+                            <span>Contact Us</span>
+                        </button>
+                    </ion-col>
+                    <ion-col col-4 style="text-align: center">
+                        <button (click)="gotoPage('CartPage')">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            <span>My Cart</span>
+                        </button>
+                    </ion-col>
+                    <ion-col col-4 style="text-align: center">
+                        <button (click)="gotoPage('OrderhistoryPage')">
+                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                            <span>Order History</span>
+                        </button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+            
+            
+            
+        </div>
+    </div>
+    <div style="background-color: #535353;padding-bottom: 50px;padding-top: 40px;" >
+        
+        <div style="border-bottom: 1px solid #cccccc;">
+            <h3 style="color: #DDA72A;padding: 5px; margin: 0px;" (click)="openAddModal()">Address <i  class="fa fa-plus-square" aria-hidden="true"></i></h3>
+        </div>
+        <ion-grid>
+            <ion-row>
+                <ion-col col-12  *ngIf="customer_address_list && customer_address_list.length>0">
+                    <ion-row *ngFor="let address of customer_address_list let i=index" class="address-sec">
+                        <ion-col col-9>
+                            <p style="padding-bottom: 5px;">{{address.label}}</p>
+                            <p style="padding-bottom: 5px;">{{address.shipping_first_name}}</p>
+                            <p style="padding-bottom: 5px;">{{address.shipping_address_1}}, {{address.shipping_city}}, {{address.shipping_state}}, {{address.shipping_postcode}}</p>
+                        </ion-col>
+                        <ion-col col-3 >
+                            <p style="padding: 5px;text-align: right;color: #DDA72A;" (click)="openEditModal(address)">Edit</p>
+                        </ion-col>
+                    </ion-row>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+        
+    
+</ion-content>
+
+<ion-footer>
+    <page-footer></page-footer>
+</ion-footer>

@@ -1,0 +1,74 @@
+<!--
+  Generated template for the AddressPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<!-- <ion-header>
+
+  <ion-navbar>
+    <ion-title>address</ion-title>
+  </ion-navbar>
+
+</ion-header> -->
+
+
+<ion-content padding  style="background: #ffffff !important;">
+
+    <form [formGroup]="addressForm" novalidate>
+
+        <ion-grid class="form-body">
+            <ion-row>
+                <ion-col col-12>
+                    <ion-input type="text" name="label" formControlName="label" [ngClass]="displayFieldCss('label')"
+                        placeholder="Address Type"></ion-input>
+                    <span class="error-msg" *ngIf="isFieldValid('label')">Please enter address type.</span>
+                </ion-col>
+                <ion-col col-12>
+                    <ion-input type="text" name="shipping_first_name" formControlName="shipping_first_name"
+                        [ngClass]="displayFieldCss('shipping_first_name')" placeholder="First Name"></ion-input>
+                    <span class="error-msg" *ngIf="isFieldValid('shipping_first_name')">Please enter a Last Name.</span>
+                </ion-col>
+                <ion-col col-12>
+                    <ion-input type="text" name="shipping_last_name" formControlName="shipping_last_name"
+                        [ngClass]="displayFieldCss('shipping_last_name')" placeholder="Last Name"></ion-input>
+                    <span class="error-msg" *ngIf="isFieldValid('shipping_last_name')">Please enter a Last Name.</span>
+                </ion-col>
+                <ion-col col-12>
+                    <ion-input type="text" name="shipping_address_1" formControlName="shipping_address_1"
+                        [ngClass]="displayFieldCss('shipping_address_1')" placeholder="Address"></ion-input>
+                    <span class="error-msg" *ngIf="isFieldValid('shipping_address_1')">Please enter Shipping
+                        Address.</span>
+                </ion-col>
+                <ion-col col-12>
+                    <ion-input type="text" name="shipping_city" formControlName="shipping_city"
+                        [ngClass]="displayFieldCss('shipping_city')" placeholder="City"></ion-input>
+                    <span class="error-msg" *ngIf="isFieldValid('shipping_city')">Please enter a city.</span>
+                </ion-col>
+                <ion-col col-12>
+                    <ion-input type="text" name="shipping_state" formControlName="shipping_state"
+                        [ngClass]="displayFieldCss('shipping_state')" placeholder="State"></ion-input>
+                    <span class="error-msg" *ngIf="isFieldValid('shipping_state')">Please enter a State.</span>
+                </ion-col>
+                <ion-col col-12>
+                    <ion-input type="tel" name="shipping_postcode" formControlName="shipping_postcode"
+                        [ngClass]="displayFieldCss('shipping_postcode')" placeholder="Pin Code"></ion-input>
+                    <span class="error-msg" *ngIf="isFieldValid('shipping_postcode')">Please enter a Pin Code.</span>
+                </ion-col>
+            </ion-row>
+            
+            <ion-row responsive-sm class="entry-bottom">
+                <ion-col col-6>
+
+                    <button ion-button  block *ngIf="isUpdate==undefined"
+                        (click)="addAdress()">Submit</button>
+                    <button ion-button  block *ngIf="isUpdate!=undefined"
+                        (click)="updateAdress()">Submit</button>
+                </ion-col>
+                <ion-col col-6>
+                    <button ion-button class="btn-cancel" (click)="closeModal()">Cancel</button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
+</ion-content>

@@ -1,0 +1,100 @@
+
+<ion-header class="bar bar-header">
+    <ion-toolbar>
+        
+
+        <ion-buttons left>
+            <button ion-button menuToggle light>
+                <ion-icon name="menu"></ion-icon>
+                <ion-title><img src="assets/imgs/logo.png" width="30"  height="30"/></ion-title>
+            </button>
+        </ion-buttons>
+        <ion-buttons left>
+            <button ion-button >
+                
+                <ion-title>{{pageName}}</ion-title>
+            </button>
+        </ion-buttons>
+        
+        <ion-buttons right>
+            <button ion-button icon-only (click)="gotoPage('SearchPage')">
+                <ion-icon ios="ios-search" md="md-search"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-buttons (click)="gotoPage('CartPage')" right>
+            <button ion-button icon-only>
+                <ion-icon ios="ios-cart-outline" md="md-cart"></ion-icon>
+                <ion-badge *ngIf="totalCart>0">{{totalCart}}</ion-badge>
+                <!-- <span class='badge badge-warning' *ngIf="totalCart>0"> {{totalCart}} </span> -->
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-menu [content]="mycontent">
+    <ion-content>
+        <ion-item class="left-logo">
+            <img src="assets/imgs/logo.png" width="100" height="100" />
+        </ion-item>
+        <ion-item (click)="gotoPage('MyprofilePage')" *ngIf="isLoggedin">
+            <i class="fa fa-user" aria-hidden="true"></i>
+            My Profile
+        </ion-item>
+        <ion-item (click)="gotoPage('HomePage')">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            Home
+        </ion-item>
+        <ion-item (click)="gotoPage('LoginPage')" *ngIf="!isLoggedin">
+            <i class="fa fa-sign-in" aria-hidden="true"></i>
+            Signin
+        </ion-item>
+        <ion-item (click)="gotoPage('SignupPage')" *ngIf="!isLoggedin">
+            <i class="fa fa-user-plus" aria-hidden="true"></i>
+            Signup
+        </ion-item>
+        <ion-item (tap)="itemToggle()">
+            <i class="fa fa-newspaper-o" aria-hidden="true"></i>
+            Collection
+        </ion-item>
+        <div *ngIf="isOpen">
+        <ion-item (click)="gotoCategory(category)" *ngFor="let category of category_list;" >
+            <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+            {{category.name}}
+        </ion-item>
+        </div>
+        <ion-item (click)="gotoPage('OrderhistoryPage')" *ngIf="isLoggedin" >
+            <ion-icon name="ion-md-git-branch" class="ion-md-git-branch"></ion-icon>
+            Order History
+        </ion-item>
+        <ion-item (click)="gotoPage('OfferPage')" >
+            <i class="fa fa-percent" aria-hidden="true"></i>
+            Offer
+        </ion-item>
+        <ion-item (click)="gotoPage('AboutusPage')">
+            <i class="fa fa-info" aria-hidden="true"></i>
+            About Us
+        </ion-item>
+        <ion-item (click)="gotoPage('ContactusPage')">
+            <i class="fa fa-phone" aria-hidden="true"></i>
+            Contact Us
+        </ion-item>
+        <ion-item (click)="gotoPage('PrivacypolicyPage')">
+            <i class="fa fa-expeditedssl" aria-hidden="true"></i>
+            Privacy Policy
+        </ion-item>
+        <ion-item (click)="gotoPage('TermsPage')">
+            <i class="fa fa-expeditedssl" aria-hidden="true"></i>
+            Terms & Conditions
+        </ion-item>
+        <ion-item (click)="gotoPage('RefundPage')">
+          <i class="fa fa-expeditedssl" aria-hidden="true"></i>
+            Refund & Cancellation
+        </ion-item>
+        <ion-item (click)="logOut()" *ngIf="isLoggedin">
+            <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+            Logout
+        </ion-item>
+    </ion-content>
+</ion-menu>
+
+<ion-nav #mycontent [root]="rootPage" swipeBackEnabled="false"></ion-nav>

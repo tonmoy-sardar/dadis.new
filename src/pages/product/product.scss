@@ -1,0 +1,29 @@
+
+.select-text
+{
+    display: none;
+}
+.select-md .select-icon .select-icon-inner
+{
+    color: #bf8b22;
+    
+}
+.select-md .select-icon
+{
+    border: 1px solid #bf8b22;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%
+}
+ion-select
+{
+    max-width: 100%;
+}
+.radio-md .radio-checked
+{
+    border-color: #bf8b22;
+}
+.item-radio-checked.item-md ion-label
+{
+    color: #bf8b22;
+}

@@ -1,0 +1,80 @@
+<ion-header>
+    <ion-navbar>
+        <!-- <button ion-button menuToggle icon-only></button> -->
+        <ion-title>Sign Up</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="background">
+
+  <div>
+    <div class="section-header">
+      <img src='/assets/imgs/logo1.png' class="logo">
+    </div>
+
+    <div class="section-text">
+      <div>
+        <h6>Skin Friendly</h6>
+      </div>
+      <div>
+        <h2><span>Silver 925 Jewellery</span></h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div>
+      <form class="form"  [formGroup]="form" (ngSubmit)="userLogin()">
+
+        <div class="form-group">
+          <div>
+            <input type="text" [ngClass]="displayFieldCss('first_name')" formControlName="first_name" class="text-field"
+          placeholder="First Name" >
+          </div>
+          <div *ngIf="isFieldValid('first_name')" class="error-msg">First Name is required</div>
+        </div>
+        <div class="form-group">
+          <div>
+            <input type="text" [ngClass]="displayFieldCss('last_name')" formControlName="last_name" class="text-field"
+          placeholder="Last Name" >
+          </div>
+          <div *ngIf="isFieldValid('last_name')" class="error-msg">Last Name is required</div>
+        </div>
+
+        <div class="form-group">
+          <div>
+            <input type="text" [ngClass]="displayFieldCss('email')" formControlName="email" class="text-field"
+          placeholder="Email address" >
+          </div>
+          <div *ngIf="isFieldValid('email')" class="error-msg">Please enter a valid Email Address</div>
+        </div>
+
+        <div class="form-group">
+          <input type="text" [ngClass]="displayFieldCss('username')" formControlName="username" class="text-field"
+            placeholder="Contact">
+          <div *ngIf="isFieldValid('username')" class="error-msg">Please enter valid contact number</div>
+        </div>
+
+        <div class="form-group">
+            <input type="password" [ngClass]="displayFieldCss('password')" formControlName="password" class="text-field"
+              placeholder="Password">
+            <div *ngIf="isFieldValid('password')" class="error-msg">Password is required</div>
+          </div>
+
+        <div class="form-group">
+          <button class="button-field" >SIGN UP</button>
+        </div>
+      </form>
+      
+    </div>
+   
+    <div class ="forgot-password-section">
+      <Span (click)="gotoPage('LoginPage')">Back to login</Span>
+    </div>
+    
+  </div>
+
+  <!-- <div>
+    <button (click)="loginButton()"></button>
+  </div> -->
+</ion-content>

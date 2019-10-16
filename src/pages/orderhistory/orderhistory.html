@@ -1,0 +1,57 @@
+<ion-header>
+    <ion-navbar>
+        <!-- <button ion-button menuToggle icon-only></button> -->
+        <ion-title>Order History</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content  *ngIf="visible" class="order-history-page">
+    <ion-grid style="padding-bottom: 50px;margin-top: 56px">
+        <ion-row *ngIf="order_list && order_list.length>0" >
+            <ion-col col-12  *ngFor="let order of order_list let i=index"  class="order-sec" (click)="gotoOrderDetails(order.id)">
+                <ion-row>
+                    <ion-col col-12 >
+                        <p><span>Order No :</span> {{order.order_key}}</p>
+                    </ion-col>
+                    <ion-col col-12 >
+                        <p><span>Date :</span> {{order.date_created | date:'dd-MM-yyyy h:mm:ss a'}}</p>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="background-color:#262626;">
+                    <ion-col col-4 style="text-align: center; border-right: 1px solid #535353; ">
+                            <p class="col-heading">Payment Status</p>
+                    </ion-col>
+                    <ion-col col-4 style="text-align: center;border-right: 1px solid #535353;">
+                            <p  class="col-heading">Payment Mode</p>
+                    </ion-col>
+                    <ion-col col-4 style="text-align: center;">
+                            <p  class="col-heading">Grand Total</p>
+                    </ion-col>
+                </ion-row>
+                <ion-row >
+                    <ion-col col-4 style="text-align: center;">
+                            <p *ngIf="order.status=='on-hold'">Pending</p>
+                            <p *ngIf="order.status=='pending'">Pending</p>
+                            <p *ngIf="order.status=='completed'">Paid</p>
+                    </ion-col>
+                    <ion-col col-4 style="text-align: center;">
+                        <p *ngIf="order.payment_method=='cod'">COD</p>
+                        <p *ngIf="order.payment_method!='cod'">Paytm</p>
+                    </ion-col>
+                    <ion-col col-4 style="text-align: center;">
+                            <p><i class="fa fa-rupee"></i>{{order.total}}</p>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="order_list && order_list.length==0">
+            <ion-col col-12  >
+                <div class="no-data" style="text-align: center">
+                    <p>Sorry! No Item listed</p>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+<ion-footer>
+    <page-footer></page-footer>
+</ion-footer>

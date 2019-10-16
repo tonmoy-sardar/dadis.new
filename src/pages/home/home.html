@@ -1,0 +1,78 @@
+<!--
+  Generated template for the HomePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<!-- <ion-header>
+    <ion-navbar>
+       
+        <ion-title>Home</ion-title>
+    </ion-navbar>
+</ion-header> -->
+<!-- <app-header></app-header> -->
+<ion-content>
+    <div class="header-banner"  style="margin-top: 56px;" *ngIf="gallery_images && gallery_images.length" >
+        <ion-slides pager  autoplay="3000" loop >
+            <ion-slide *ngFor="let galleryImage of gallery_images; let i = index">
+                <img [src]="galleryImage.gallery_img" class="slide-image" />
+            </ion-slide>
+        </ion-slides>
+    </div>
+
+    <ion-grid >
+        <ion-row>
+            <ion-col col-12 >
+            <h3 class="heading-text">Popular Product</h3>
+            <ion-slides *ngIf="popular_product_list && popular_product_list.length"  class="banner-slide"  loop
+                slidesPerView="2.5" spaceBetween="10">
+
+                <ion-slide *ngFor="let popular_product of popular_product_list; let i = index" class="img-container" (click)="gotoProduct(popular_product)">
+                    <img [src]="popular_product.product_img" class="slide-image" />
+                    <div class="text-on-image"><h4>{{popular_product.product_name}}</h4></div>
+                    
+                </ion-slide>
+               
+            </ion-slides>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <ion-grid style="padding-bottom: 50px;">
+        <ion-row>
+            <ion-col col-12 >
+                <h3 class="heading-text">Collection</h3>
+                <ion-row *ngIf="category_list && category_list.length">
+                    <ion-col col-6  *ngFor="let category of category_list let i=index" (click)="gotoCategory(category)">
+                        <div class="category-container">
+                            <img [src]="category.image.src"  *ngIf="category.image!=null"/>
+                            <img src="assets/imgs/placeholder.png" *ngIf="category.image==null"/>
+                            <div class="text-on-image"><h4>{{category.name}}</h4></div>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    
+    <!-- <ion-grid padding-bottom>
+        <ion-row>
+            <ion-col col-12 >
+            <h3 class="heading-text">Recently Viewed</h3>
+            <ion-slides *ngIf="popular_product_list && popular_product_list.length"  class="banner-slide"  loop
+                slidesPerView="2.5" spaceBetween="10">
+
+                <ion-slide *ngFor="let popular_product of popular_product_list; let i = index" class="img-container" >
+                    <img [src]="popular_product.product_img" class="slide-image" />
+                    <div class="text-on-image"><h4>{{popular_product.product_name}}</h4></div>
+                    
+                </ion-slide>
+                
+            </ion-slides>
+            </ion-col>
+        </ion-row>
+    </ion-grid> -->
+</ion-content>
+<ion-footer>
+    <page-footer></page-footer>
+</ion-footer>
