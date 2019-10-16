@@ -31,9 +31,10 @@
                         <h3>{{product.name}}</h3>
                         <p style="padding-bottom: 5px;">{{product.short_description}}</p>
                         <p style="padding-bottom: 5px;" *ngIf="product.product_variation.length>0">
-                            <span class="item-price" *ngIf="product.product_variation[0].price"><i class="fa fa-inr"></i>{{product.product_variation[0].price}}</span>
-                            <span class="item-price-discount" *ngIf="product.product_variation[0].regular_price > product.product_variation[0].price"><i class="fa fa-inr"></i>{{product.product_variation[0].regular_price}}</span>
-                            <span class="item-price-discount-value" *ngIf="product.product_variation[0].regular_price > product.product_variation[0].price">( - {{getDiscount(product.product_variation[0].price,product.product_variation[0].regular_price)}} )</span>
+                            <span class="item-price" *ngIf="product.product_variation[0].sale_price>0"><i class="fa fa-inr"></i>{{product.product_variation[0].sale_price}}</span>
+                            <span class="item-price" *ngIf="product.product_variation[0].sale_price==0"><i class="fa fa-inr"></i>{{product.product_variation[0].regular_price}}</span>
+                            <span class="item-price-discount" *ngIf="product.product_variation[0].sale_price>0 && product.product_variation[0].regular_price > product.product_variation[0].sale_price"><i class="fa fa-inr"></i>{{product.product_variation[0].regular_price}}</span>
+                            <span class="item-price-discount-value" *ngIf="product.product_variation[0].sale_price>0 && product.product_variation[0].regular_price > product.product_variation[0].sale_price">( - {{getDiscount(product.product_variation[0].sale_price,product.product_variation[0].regular_price)}} )</span>
                         </p>
                         <p style="padding-bottom: 5px;" *ngIf="product.product_variation.length==0">
                             <span class="item-price" *ngIf="product.price"><i class="fa fa-inr"></i>{{product.price}}</span>

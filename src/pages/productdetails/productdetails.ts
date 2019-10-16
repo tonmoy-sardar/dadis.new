@@ -35,6 +35,8 @@ export class ProductdetailsPage {
   sizeAttributeList: any = [];
   attributeList: any = [];
   customer_cart_data:any = [];
+  product_variation: any = [];
+  stockQty:any;
   activeIndex: any;
   isCart: boolean;
   logged_user_id: string;
@@ -71,10 +73,33 @@ export class ProductdetailsPage {
     console.log(this.customer_cart_data)
   
     this.getProductDetails(this.product_id);
+    this.getProductVariations(this.product_id);
 
     this.logged_user_id = localStorage.getItem('logged_user_id')
   }
 
+  getProductVariations(product_id) {
+    let params = {
+      per_page: 100
+    }
+    let url = Globals.apiEndpoint + 'products/' + product_id + '/variations';
+    let productDeatilsUrl: string = this.woocommerceService.authenticateApi('GET', url, params);
+
+    this.categoryService.getProductDetails(productDeatilsUrl).subscribe(
+      res => {
+       
+        this.product_variation = res;
+        console.log(this.product_variation);
+        if(this.product_variation.length > 0) {
+          this.stockQty = this.product_variation[0].stock_quantity;
+        }      
+      },
+      error => {
+        console.log(error);
+
+      }
+    )
+  }
 
   getProductDetails(product_id) {
       this.spinnerDialog.show();
@@ -111,8 +136,28 @@ export class ProductdetailsPage {
               else {
                   this.product_details['isCart'] = false;
                   this.product_details['quantity'] = 0;
-                  this.product_details['price'] = parseFloat(this.product_details['price'])
-                  this.product_details['regular_price'] = parseFloat(this.product_details['regular_price'])
+                  // this.product_details['price'] = parseFloat(this.product_details['price'])
+                  // this.product_details['regular_price'] = parseFloat(this.product_details['regular_price'])
+
+                  if(res.product_variation.length > 0){
+                    console.log("1111");
+                    console.log(this.product_details.product_variation[0]['regular_price']);
+                    this.product_details['regular_price'] = parseFloat(this.product_details.product_variation[0]['regular_price']);
+                    console.log( this.product_details['regular_price']);
+                    if(this.product_details.product_variation[0]['sale_price']>0)
+                    {
+                      this.product_details['price'] = parseFloat(this.product_details.product_variation[0]['sale_price'])
+                    }
+                    else{
+                      this.product_details['price'] = parseFloat(this.product_details.product_variation[0]['regular_price'])
+                    }
+                    
+                  }
+                  else{
+                    console.log("2222");
+                    this.product_details['price'] = parseFloat(this.product_details['price'])
+                    this.product_details['regular_price'] = parseFloat(this.product_details['regular_price'])
+                  }
               }
 
               res.attributes.forEach(y => {
@@ -159,6 +204,8 @@ export class ProductdetailsPage {
    
     this.activeIndex = i;
     console.log(this.activeIndex);
+
+    
 
     var index = this.customer_cart_data.findIndex(y => y.product_id == this.product_details.id && y.user_id == this.logged_user_id);
       if (index != -1) {

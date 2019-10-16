@@ -19,15 +19,11 @@
                     <h3>{{product_details.name}}</h3>
                     <p style="padding-bottom: 5px;" [innerHTML]="product_details.short_description"></p>
 
-                    <p style="padding-bottom: 5px;" *ngIf="product_details.product_variation.length>0">
-                        <span class="item-price" *ngIf="product_details.product_variation[0].sale_price"><i class="fa fa-inr"></i>{{product_details.product_variation[0].sale_price}}</span>
-                        <span class="item-price-discount" *ngIf="product_details.product_variation[0].regular_price > product_details.product_variation[0].sale_price"><i class="fa fa-inr"></i>{{product_details.product_variation[0].regular_price}}</span>
-                        <span class="item-price-discount-value" *ngIf="product_details.product_variation[0].regular_price > product_details.product_variation[0].sale_price">( - {{getDiscount(product_details.product_variation[0].sale_price,product_details.product_variation[0].regular_price)}} )</span>
-                    </p>
-                    <p style="padding-bottom: 5px;" *ngIf="product_details.product_variation.length==0">
-                        <span class="item-price" *ngIf="product_details.sale_price"><i class="fa fa-inr"></i>{{product_details.sale_price}}</span>
-                        <span class="item-price-discount" *ngIf="product_details.regular_price > product_details.sale_price"><i class="fa fa-inr"></i>{{product_details.regular_price}}</span>
-                        <span class="item-price-discount-value" *ngIf="product_details.regular_price > product_details.sale_price">( - {{getDiscount(product_details.sale_price,product_details.regular_price)}} )</span>
+                   
+                    <p style="padding-bottom: 5px;" >
+                        <span class="item-price" *ngIf="product_details.price"><i class="fa fa-inr"></i>{{product_details.price}}</span>
+                        <span class="item-price-discount" *ngIf="product_details.regular_price > product_details.price"><i class="fa fa-inr"></i>{{product_details.regular_price}}</span>
+                        <span class="item-price-discount-value" *ngIf="product_details.regular_price > product_details.price">( - {{getDiscount(product_details.price,product_details.regular_price)}} )</span>
                     </p>
                     <!-- <p style="padding-bottom: 5px;">
                         <span class="item-price" *ngIf="product_details.price"><i class="fa fa-inr"></i>{{product_details.price}}</span>
@@ -37,8 +33,8 @@
                 </div>
             </ion-col>
         </ion-row>
-        <div *ngFor="let attribute of product_details.attributes let i=index">
-            <ion-row class="product-sec" style="margin-bottom: 5px;" *ngIf="attribute.name=='Size'">
+        <div>
+            <ion-row class="product-sec" style="margin-bottom: 5px;" *ngIf="product_variation.length>0">
                 <ion-col col-12 >
                     <div style="border-bottom: 1px solid #cccccc;">
                         <h3>Specification</h3>
@@ -47,8 +43,8 @@
                 <ion-col col-12 >
                     <div style="padding-top: 10px;" >
                         <p class="section-header">Select Size</p>
-                        <div class="dot-size" (click)="selectSize(size,j);"  *ngFor="let size of attribute.options let j=index" [ngStyle]=" j === activeIndex ? {'background-color': '#333b45'} : {'background-color': ''} ">
-                            <span>{{size}}</span>
+                        <div class="dot-size" (click)="selectSize(variation,j);"   *ngFor="let variation of product_variation let j=index" [ngStyle]=" j === activeIndex ? {'background-color': '#333b45'} : {'background-color': ''} ">
+                            <span>{{variation.attributes[0].option}}</span>
                         </div>
                     </div>
                 </ion-col>
