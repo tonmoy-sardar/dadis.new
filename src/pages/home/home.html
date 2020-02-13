@@ -37,7 +37,7 @@
             </ion-col>
         </ion-row>
     </ion-grid>
-    <ion-grid style="padding-bottom: 50px;">
+    <ion-grid >
         <ion-row>
             <ion-col col-12 >
                 <h3 class="heading-text">Collection</h3>
@@ -54,25 +54,23 @@
         </ion-row>
     </ion-grid>
 
-    
-    <!-- <ion-grid padding-bottom>
-        <ion-row>
-            <ion-col col-12 >
-            <h3 class="heading-text">Recently Viewed</h3>
-            <ion-slides *ngIf="popular_product_list && popular_product_list.length"  class="banner-slide"  loop
-                slidesPerView="2.5" spaceBetween="10">
+    <ion-grid >
+        <ion-row style="padding-bottom: 50px;">
+            <ion-col col-12 *ngIf="recently_view_product && recently_view_product.length>0">
+                <h3 class="heading-text">Recently Viewed</h3>
+                <ion-slides   class="banner-slide"  loop
+                    slidesPerView="2.5" spaceBetween="10">
 
-                <ion-slide *ngFor="let popular_product of popular_product_list; let i = index" class="img-container" >
-                    <img [src]="popular_product.product_img" class="slide-image" />
-                    <div class="text-on-image"><h4>{{popular_product.product_name}}</h4></div>
-                    
-                </ion-slide>
+                    <ion-slide *ngFor="let recently_view of recently_view_product; let i = index" class="img-container" (click)="gotoProduct(recently_view)">
+                        <img [src]="recently_view.product_img" class="slide-image" />
+                        <div class="text-on-image"><h4>{{recently_view.product_name}}</h4></div>
+                        
+                    </ion-slide>
                 
-            </ion-slides>
+                </ion-slides>
             </ion-col>
         </ion-row>
-    </ion-grid> -->
+    </ion-grid>
+
+   
 </ion-content>
-<ion-footer>
-    <page-footer></page-footer>
-</ion-footer>

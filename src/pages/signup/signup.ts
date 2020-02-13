@@ -50,7 +50,6 @@ submitted=false;
     }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad HomePage');
     this.menuCtrl.close();
   }
   
@@ -103,7 +102,6 @@ submitted=false;
          
         },
         error => {
-          console.log(error);
           this.spinnerDialog.hide();
           this.presentToast(error.error.message);
         }

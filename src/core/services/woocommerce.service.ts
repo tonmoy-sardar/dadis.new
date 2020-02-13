@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import hmacSHA1 from 'crypto-js/hmac-sha1';
 import Base64 from 'crypto-js/enc-base64';
 import * as Global from "../global"
-// @Injectable({
-//  providedIn: 'root'
-// })
+
 @Injectable()
 export class WoocommerceService {
   nonce: string = ''

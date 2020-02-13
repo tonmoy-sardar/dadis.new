@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, MenuController, ViewController, Events } from 'ionic-angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ToastController } from 'ionic-angular';
-import { SpinnerDialog } from '@ionic-native/spinner-dialog';
+
 //Services
 import { PaymentService } from '../../core/services/payment.service';
 import { WoocommerceService } from "../../core/services/woocommerce.service";
@@ -32,8 +31,6 @@ export class AddressPage {
     public navParams: NavParams,
     public events1: Events,
     private formBuilder: FormBuilder,
-    private toastCtrl: ToastController,
-    private spinnerDialog: SpinnerDialog,
     public paymentService: PaymentService,
     public menuCtrl: MenuController,
     private woocommerceService: WoocommerceService,
@@ -110,7 +107,6 @@ export class AddressPage {
           this.closeModal();
         },
         error => {
-          console.log(error)
         }
       )
     }
@@ -146,11 +142,9 @@ export class AddressPage {
       let updateAddressUrl: string = this.woocommerceService.authenticateApi('PUT', url, url_params);
       this.paymentService.updateCustomerAddress(updateAddressUrl, data).subscribe(
         res => {
-          console.log(res);
           this.navCtrl.pop();
         },
         error => {
-          console.log(error)
         }
       )
     }

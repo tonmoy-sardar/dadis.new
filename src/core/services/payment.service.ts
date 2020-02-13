@@ -1,12 +1,10 @@
-import { Injectable, EventEmitter, Output } from "@angular/core";
+import { Injectable } from "@angular/core";
 import {
   HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-  HttpParams,
+
 } from "@angular/common/http";
-import { Observable, BehaviorSubject } from "rxjs";
-import { map, catchError } from "rxjs/operators";
+import { Observable } from "rxjs";
+
 import * as Globals from '../global';
 
 @Injectable()
@@ -31,7 +29,6 @@ export class PaymentService {
   }
 
   createOrder(orderAddUrl,data) {
-    console.log(data);
     return this.http.post(orderAddUrl, data)
   }
 

@@ -3,13 +3,12 @@ import { IonicPage, NavController, NavParams, MenuController ,ModalController,To
 
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
-import {CartService} from '../../core/services/cart.service';
 import {CategoryService} from '../../core/services/category.service';
 import {WoocommerceService} from '../../core/services/woocommerce.service';
 import * as Globals from '../../core/global';
 
 import { GalleryModal } from 'ionic-gallery-modal';
-import { e } from '@angular/core/src/render3';
+
 
 //import { CheckOutPage } from '../check-out/check-out';
 
@@ -37,10 +36,12 @@ export class ProductdetailsPage {
   customer_cart_data:any = [];
   product_variation: any = [];
   stockQty:any;
+  stockStatus:any;
   activeIndex: any;
   isCart: boolean;
   logged_user_id: string;
   selectedIndex: number = 0;
+  recently_view_product:any = [];
   constructor(
     private spinnerDialog: SpinnerDialog,
     public navCtrl: NavController, 
@@ -49,18 +50,20 @@ export class ProductdetailsPage {
     private toastCtrl: ToastController,
     private categoryService: CategoryService,
     private woocommerceService: WoocommerceService,
-    private cartService: CartService,
     private modalCtrl: ModalController,
     public events: Events,
     ) {
       this.events.publish('page-name', 'Product Details');
+      if (localStorage.getItem("recentlyView")) {
+        this.recently_view_product = JSON.parse(localStorage.getItem("recentlyView"));
+      }
+
     }
 
   
   ionViewDidLoad() {
     this.menuCtrl.close();
     this.isCart=false;
-    console.log('ionViewDidLoad ProductdetailsPage');
 
     this.product_id = this.navParams.get('id');
     if (localStorage.getItem("cart")) {
@@ -69,8 +72,6 @@ export class ProductdetailsPage {
     else {
       this.customer_cart_data = [];
     }
-
-    console.log(this.customer_cart_data)
   
     this.getProductDetails(this.product_id);
     this.getProductVariations(this.product_id);
@@ -89,14 +90,24 @@ export class ProductdetailsPage {
       res => {
        
         this.product_variation = res;
-        console.log(this.product_variation);
-        if(this.product_variation.length > 0) {
-          this.stockQty = this.product_variation[0].stock_quantity;
-        }      
+
+        if(this.product_variation.length>0)
+        { 
+          var index = this.customer_cart_data.findIndex(y => y.product_id == product_id && y.user_id == this.logged_user_id && y.variation_id==this.product_variation.id);
+
+          if (index != -1) 
+          {
+            this.activeIndex = index;
+            this.stockQty = this.product_variation[index].stock_quantity;
+          }
+          else{
+            this.stockQty = this.product_variation[0].stock_quantity;
+          }
+
+        }
+        
       },
       error => {
-        console.log(error);
-
       }
     )
   }
@@ -110,40 +121,22 @@ export class ProductdetailsPage {
 
       this.categoryService.getProductDetails(productDeatilsUrl).subscribe(
           res => {
-              console.log(res);
               this.product_details = res;
-              var index = this.customer_cart_data.findIndex(y => y.product_id == this.product_details.id && y.user_id == this.logged_user_id);
+              var index = this.customer_cart_data.findIndex(y => y.product_id == product_id && y.user_id == this.logged_user_id);
 
                 if (index != -1) {
                   this.product_details['isCart'] = true;
                   this.product_details['quantity'] =  parseInt(this.customer_cart_data[index].quantity)
-                  this.product_details['price'] = parseFloat(this.product_details['price'])
-                  this.product_details['regular_price'] = parseFloat(this.product_details['regular_price'])
-                  if (this.customer_cart_data[index]['size'] != undefined) {
-                      if (this.product_details.attributes.length > 0) {
-                          this.product_details.attributes.forEach(y => {
-                              if (y.name == 'Size') {
-                                  var optionIndex = y.options.findIndex(z => z == this.customer_cart_data[index]['size'])
-                                  if (optionIndex != -1) {
-                                      this.activeIndex = optionIndex;
-                                  }
-
-                              }
-                          })
-                      }
-                  }
+                  this.product_details['price'] = parseFloat(this.customer_cart_data[index]['price'])
+                  this.product_details['regular_price'] = parseFloat(this.customer_cart_data[index]['regular_price'])
+                 
               }
               else {
                   this.product_details['isCart'] = false;
                   this.product_details['quantity'] = 0;
-                  // this.product_details['price'] = parseFloat(this.product_details['price'])
-                  // this.product_details['regular_price'] = parseFloat(this.product_details['regular_price'])
-
+                 
                   if(res.product_variation.length > 0){
-                    console.log("1111");
-                    console.log(this.product_details.product_variation[0]['regular_price']);
                     this.product_details['regular_price'] = parseFloat(this.product_details.product_variation[0]['regular_price']);
-                    console.log( this.product_details['regular_price']);
                     if(this.product_details.product_variation[0]['sale_price']>0)
                     {
                       this.product_details['price'] = parseFloat(this.product_details.product_variation[0]['sale_price'])
@@ -154,11 +147,21 @@ export class ProductdetailsPage {
                     
                   }
                   else{
-                    console.log("2222");
-                    this.product_details['price'] = parseFloat(this.product_details['price'])
-                    this.product_details['regular_price'] = parseFloat(this.product_details['regular_price'])
+                    if(this.product_details['price'])
+                    {
+                      this.product_details['price'] = parseFloat(this.product_details['price'])
+                    }
+                    if(this.product_details['regular_price'])
+                    {
+                      this.product_details['regular_price'] = parseFloat(this.product_details['regular_price'])
+                    }
+                    
+                    
                   }
               }
+
+              this.stockStatus = this.product_details['stock_status'];
+              this.stockQty = this.product_details['stock_quantity'];
 
               res.attributes.forEach(y => {
                 if(y.name == 'Size')
@@ -173,10 +176,9 @@ export class ProductdetailsPage {
               res.images.forEach(x => {
                 this.proImageList.push({ url: x.src })
               })
-
               this.visible = true
 
-              //this.recentlyViewdProduct(this.product_details);
+              this.recentlyViewdProduct(this.product_details);
               this.spinnerDialog.hide();
           },
           error => {
@@ -187,12 +189,34 @@ export class ProductdetailsPage {
   }
   
 
+  recentlyViewdProduct(product_details) {
+
+    var data = {
+        product_id: product_details.id,
+        product_name: product_details.name,
+        description: product_details.short_description,
+        product_img: product_details.images[0].src,
+    }
+    var index = this.recently_view_product.findIndex(y => y.product_id == product_details.id);
+
+    if (index == -1) {
+        this.recently_view_product.push(data);
+        this.setRecentlyViewdProduct();
+    }
+
+  }
+
+  setRecentlyViewdProduct() {
+    localStorage.setItem("recentlyView", JSON.stringify(this.recently_view_product));
+    this.events.publish('recently_view_change', 'true');
+  }
+
+
   getDiscount(price, regular_price) {
     return Math.floor(((regular_price - price) * 100) / regular_price) + '%';
   }
 
   openModal(index) {
-    //console.log(index);
     let modal = this.modalCtrl.create(GalleryModal, {
       photos: this.proImageList,
       initialSlide: index, // The second image
@@ -201,18 +225,33 @@ export class ProductdetailsPage {
   }
 
   selectSize(size, i) {
-   
+  
     this.activeIndex = i;
-    console.log(this.activeIndex);
-
+    var selectedProductVariation = this.product_variation[i];
+    if(selectedProductVariation['sale_price']>0)
+    {
+      this.product_details['price'] = parseFloat(selectedProductVariation['sale_price'])
+    }
+    else{
+      this.product_details['price'] = parseFloat(selectedProductVariation['regular_price'])
+    }
+    this.product_details['regular_price'] = parseFloat(selectedProductVariation['regular_price']);
     
-
-    var index = this.customer_cart_data.findIndex(y => y.product_id == this.product_details.id && y.user_id == this.logged_user_id);
+    this.stockQty = selectedProductVariation['stock_quantity'];
+    if(this.stockQty>0)
+    {
+     
+      var index = this.customer_cart_data.findIndex(y => y.product_id == this.product_details.id && y.user_id == this.logged_user_id);
       if (index != -1) {
-          this.customer_cart_data[index].size = this.product_details.attributes[i]['options'][this.activeIndex]
-          this.customer_cart_data[index].variation_id = this.product_details.variations[this.activeIndex]
+          this.customer_cart_data[index].size = selectedProductVariation.attributes[0]['option']
+          this.customer_cart_data[index].variation_id = selectedProductVariation.id
+          this.customer_cart_data[index].quantity = 1
+          this.customer_cart_data[index].price = this.product_details['price']
+          this.product_details['quantity']  =1;
           this.setCartData();
       }
+    }
+    
   }
 
   addToCartOriginal(product_details)
@@ -223,42 +262,29 @@ export class ProductdetailsPage {
           product_name: product_details.name,
           description: product_details.short_description,
           price: product_details.price,
-          quantity: parseInt(product_details.quantity) + 1
+          regular_price: product_details.regular_price,
+          quantity: parseInt(product_details.quantity) + 1,
+          stockQty: this.stockQty,
+          size:'',
       }
-      console.log(data);
-      if(product_details.product_variation.length > 0){
-          data['regular_price'] = product_details.product_variation[0]['regular_price']
-      }
-      else{
-          data['regular_price'] = product_details.regular_price
-      }
+     
       if(product_details.images.length > 0){
           data['image_small'] = product_details.images[0].src
       }
       else{
           data['image_small'] = null
       }
-      if (product_details.attributes.length > 0) {
-        product_details.attributes.forEach(y => {
-            if (y.name == 'Size') {
-                data['size'] = y.options[this.activeIndex];
-                data['variation_id'] = product_details.variations[this.activeIndex];
-            }
-        })
-    }
-    var index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
-    this.product_details['isCart'] = true;
-    this.product_details['quantity'] = parseInt(this.product_details['quantity']) + 1;
-
-    console.log(index);
-    console.log(this.customer_cart_data);
+      
+      if (this.product_variation.length > 0) {
+        data['size'] = this.product_variation[this.activeIndex].attributes[0]['option'];
+        data['variation_id'] = this.product_variation[this.activeIndex].id;
+      }
+      var index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
+      this.product_details['isCart'] = true;
+      this.product_details['quantity'] = parseInt(this.product_details['quantity']) + 1;
     if (index == -1) {
-        console.log("sdsad");
-        console.log(data);
         this.customer_cart_data.push(data);
-        console.log(this.customer_cart_data);
         this.setCartData();
-        
     }
   }
   addToCart(product_details) {
@@ -267,7 +293,14 @@ export class ProductdetailsPage {
     {
       if(this.activeIndex>-1)
       {
-        this.addToCartOriginal(product_details);
+        if(this.stockQty==0)
+        {
+          this.presentToast("Sorry! Product is out of stock");
+        }
+        else{
+          this.addToCartOriginal(product_details);
+        }
+        
       }
       else{
         this.presentToast("Please select preferred size.");
@@ -275,13 +308,21 @@ export class ProductdetailsPage {
     }
     else{
 
-      this.addToCartOriginal(product_details);
+      if(this.stockQty==0)
+      {
+        this.presentToast("Sorry! Product is out of stock");
+      }
+      else{
+        this.addToCartOriginal(product_details);
+      }
+      
     }
   }
 
   decrement(product_details) {
+    var index;
     if (product_details.quantity > 1) {
-        var index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
+        index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
         if (index != -1) {
             this.customer_cart_data[index].quantity = product_details.quantity - 1;
             this.setCartData();
@@ -291,7 +332,7 @@ export class ProductdetailsPage {
 
     }
     else {
-        var index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
+        index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
         if (index != -1) {
             this.customer_cart_data.splice(index, 1);
             this.setCartData();
@@ -304,12 +345,36 @@ export class ProductdetailsPage {
 
   }
   increment(product_details) {
-    var index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
-    if (index != -1) {
-        this.customer_cart_data[index].quantity = product_details.quantity + 1;
-        this.setCartData();
+
+    var index;
+    if(this.stockStatus=="instock")
+    {
+      if(this.stockQty!=null)
+      {
+        if(product_details.quantity<this.stockQty)
+        {
+          index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
+          if (index != -1) {
+              this.customer_cart_data[index].quantity = product_details.quantity + 1;
+              this.setCartData();
+          }
+          this.product_details.quantity = product_details.quantity + 1
+        }
+        else{
+          this.presentToast("Sorry! You can not add more than "+this.stockQty);
+        }
+      }
+      else{
+
+          index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
+          if (index != -1) {
+              this.customer_cart_data[index].quantity = product_details.quantity + 1;
+              this.setCartData();
+          }
+          this.product_details.quantity = product_details.quantity + 1
+      }
+     
     }
-    this.product_details.quantity = product_details.quantity + 1
 
   }
 
@@ -320,13 +385,17 @@ export class ProductdetailsPage {
 
   buyNowOriginal(product_details)
   {
-      if (product_details.quantity > 1) {
+      if (product_details.quantity > 0) {
+        // this.product_details.quantity = product_details.quantity;
         var index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
         if (index != -1) {
-            this.customer_cart_data[index].quantity = product_details.quantity + 1;
+            this.customer_cart_data[index].quantity = product_details.quantity;
             this.setBuyNowCartData();
         }
-        this.product_details.quantity = product_details.quantity + 1
+        else{
+          this.setBuyNowCartData();
+        }
+        
     }
     else {
         var data = {
@@ -336,7 +405,9 @@ export class ProductdetailsPage {
             description: product_details.short_description,
             price: product_details.price,
             image_small: product_details.images[0].src,
-            quantity: parseInt(product_details.quantity) + 1
+            quantity: parseInt(product_details.quantity) + 1,
+            stockQty: this.stockQty,
+            size:'',
         }
         if(product_details.product_variation.length > 0){
             data['regular_price'] = product_details.product_variation[0]['regular_price']
@@ -344,20 +415,16 @@ export class ProductdetailsPage {
         else{
             data['regular_price'] = product_details.regular_price
         }
-        if (product_details.attributes.length > 0) {
-            product_details.attributes.forEach(y => {
-                if (y.name == 'Size') {
-                    data['size'] = y.options[this.activeIndex];
-                    data['variation_id'] = product_details.variations[this.activeIndex];
-                }
-            })
+        if (this.product_variation.length > 0) {
+          data['size'] = this.product_variation[this.activeIndex].attributes[0]['option'];
+          data['variation_id'] = this.product_variation[this.activeIndex].id;
         }
-        var index = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
+        var index1 = this.customer_cart_data.findIndex(y => y.product_id == product_details.id && y.user_id == this.logged_user_id);
         this.product_details['isCart'] = true;
         this.product_details['quantity'] = this.product_details['quantity'] + 1;
 
 
-        if (index == -1) {
+        if (index1 == -1) {
             this.customer_cart_data.push(data);
             this.setBuyNowCartData();
         }
@@ -369,7 +436,13 @@ export class ProductdetailsPage {
     {
       if(this.activeIndex>-1)
       {
+        if(this.stockQty==0)
+        {
+          this.presentToast("Sorry! Product is out of stock");
+        }
+        else{
         this.buyNowOriginal(product_details);
+        }
       }
       else{
         this.presentToast("Please select preferred size.");
@@ -377,7 +450,13 @@ export class ProductdetailsPage {
     }
     else{
 
-      this.buyNowOriginal(product_details);
+      if(this.stockQty==0)
+      {
+        this.presentToast("Sorry! Product is out of stock");
+      }
+      else{
+        this.buyNowOriginal(product_details);
+      }
     }
   }
 

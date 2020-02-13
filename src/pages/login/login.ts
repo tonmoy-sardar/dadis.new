@@ -20,6 +20,7 @@ import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 export class LoginPage {
 
   form: FormGroup;
+  all_cart_data: any = [];
  
   constructor(
     public navCtrl: NavController, 
@@ -38,12 +39,14 @@ export class LoginPage {
         email_phone: ['', Validators.required],
         password: ['', Validators.required]
       });
-  
+      if (localStorage.getItem("cart")) {
+        this.all_cart_data = JSON.parse(localStorage.getItem("cart"));
+      }
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad HomePage');
     this.menuCtrl.close();
+    
   }
   
   userLogin() {
@@ -66,11 +69,21 @@ export class LoginPage {
           this.userService.loginStatus(true)
           this.spinnerDialog.hide();
           this.presentToast("Signin Successfully");
+
+          if(this.all_cart_data.length>0)
+          {
+            this.all_cart_data.forEach(x => {
+              if (x.user_id==null) {
+                x.user_id = res.user['user_id'].toString();
+              }
+            })
+            localStorage.setItem("cart",JSON.stringify(this.all_cart_data))
+          }
+          
           this.navCtrl.setRoot('HomePage');
          
         },
         error => {
-          console.log(error);
           this.spinnerDialog.hide();
           this.presentToast("Please check your login credential");
         }

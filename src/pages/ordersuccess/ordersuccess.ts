@@ -4,7 +4,6 @@ import { IonicPage, NavController, NavParams, MenuController,Events } from 'ioni
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
 import {PaymentService} from '../../core/services/payment.service';
-import {CategoryService} from '../../core/services/category.service';
 import {WoocommerceService} from '../../core/services/woocommerce.service';
 import * as Globals from '../../core/global';
 
@@ -38,7 +37,6 @@ export class OrdersuccessPage {
     public navParams: NavParams,
     public menuCtrl:MenuController,
     private paymentService: PaymentService,
-    private categoryService: CategoryService,
     private woocommerceService: WoocommerceService,
     public events: Events,
     ) {
@@ -48,7 +46,6 @@ export class OrdersuccessPage {
   
   ionViewDidLoad() {
     this.menuCtrl.close();
-    console.log('ionViewDidLoad OrdersuccessPage');
     this.order_id= this.navParams.get('id');
 
     if (localStorage.getItem('isLoggedin')) {

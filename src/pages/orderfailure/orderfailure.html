@@ -1,0 +1,102 @@
+<ion-header>
+        <ion-navbar>
+            <!-- <button ion-button menuToggle icon-only></button> -->
+            <ion-title>Order Failure</ion-title>
+        </ion-navbar>
+    </ion-header>
+    <ion-content  *ngIf="visible" class="order-history-page">
+        <ion-grid style="padding-bottom: 50px;margin-top: 56px">
+
+            <ion-row >
+                <ion-col col-12 >
+                    <div class="order-failure-sec" style="text-align: center">
+                        <img src="assets/imgs/fail.png" class="slide-image" style="text-align: center; height: 70px;" />
+                        <p>Order Failure</p>
+                    </div>
+                </ion-col>
+            </ion-row>
+            <ion-row  >
+                <ion-col col-12  class="order-sec">
+                    <ion-row>
+                        <ion-col col-12 >
+                            <p><span>Order No :</span> {{order_details.order_key}}</p>
+                        </ion-col>
+                        <ion-col col-12 >
+                            <p><span>Date :</span> {{order_details.date_created | date:'dd-MM-yyyy h:mm:ss a'}}</p>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row  style="background-color:#262626;margin: 0px 5px;">
+                        <ion-col col-4 style="text-align: center; border-right: 1px solid #535353; ">
+                                <p class="col-heading">Payment Status</p>
+                        </ion-col>
+                        <ion-col col-4 style="text-align: center;border-right: 1px solid #535353;">
+                                <p  class="col-heading">Payment Mode</p>
+                        </ion-col>
+                        <ion-col col-4 style="text-align: center;">
+                                <p  class="col-heading">Grand Total</p>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row >
+                        <ion-col col-4 style="text-align: center;">
+                                <p *ngIf="order_details.status=='on-hold'">Pending</p>
+                                <p *ngIf="order_details.status=='pending'">Pending</p>
+                                <p *ngIf="order_details.status=='completed'">Paid</p>
+                        </ion-col>
+                        <ion-col col-4 style="text-align: center;">
+                            <p *ngIf="order_details.payment_method=='cod'">COD</p>
+                            <p *ngIf="order_details.payment_method!='cod'">Paytm</p>
+                        </ion-col>
+                        <ion-col col-4 style="text-align: center;">
+                                <p><i class="fa fa-rupee"></i>{{order_details.total}}</p>
+                        </ion-col>
+                    </ion-row>
+                </ion-col>
+            </ion-row>
+    
+            <ion-row class="product-list" *ngIf="order_details.line_items && order_details.line_items.length>0">
+                <ion-col col-12  *ngFor="let item of order_details.line_items let i=index" >
+                    <div class="product-sec">
+                        <img [src]="item.product_img?item.product_img:'assets/imgs/placeholder.png'">
+                        <div class="product-text"> 
+                            <h3>{{item.name}}</h3>
+                            <p style="padding-bottom: 5px;">Qty :{{item.quantity}}</p>
+                            <p style="padding-bottom: 5px;">Price :<span><i class="fa fa-rupee"></i>{{item.total}}</span> ( <i class="fa fa-rupee"></i>{{item.price}} x {{item.quantity}} )</p>
+                        </div>
+                    </div>
+                </ion-col>
+            </ion-row>
+    
+            <ion-row class="address-sec">
+                <ion-col col-12 >
+                    <div style="border-bottom: 1px solid #cccccc;">
+                        <h3>Delivery Address</h3>
+                    </div>
+                </ion-col>
+                <ion-col col-12  >
+                    <ion-row >
+                        <ion-col col-12>
+                            <p style="padding-bottom: 5px;">{{order_details.shipping.first_name}}  {{order_details.shipping.last_name}}</p>
+                            <p>
+                                {{order_details.shipping.phone}}
+                                {{order_details.shipping.address_1}}
+                                {{order_details.shipping.address_2}}        
+                                {{order_details.shipping.city}}
+                                {{order_details.shipping.state}} 
+                                {{order_details.shipping.postcode}}
+                                {{order_details.shipping.country}}
+                            </p>
+                        </ion-col>
+                        
+                    </ion-row>
+                </ion-col>
+            </ion-row>
+            <ion-row class="grand-total-sec">
+                <ion-col col-12 >
+                        <div  style="text-align: center">
+                            <p>Grand Total</p>
+                            <h3><i class="fa fa-rupee"></i>{{order_details.total}}</h3>
+                        </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-content>

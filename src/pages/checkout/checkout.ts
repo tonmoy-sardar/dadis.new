@@ -4,10 +4,18 @@ import { FormGroup, FormBuilder,FormControl, Validators } from '@angular/forms';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
 import {PaymentService,OrderModule, line_items, coupon_lines, meta_data, PaymentRadioOption, AddressRadioOption} from '../../core/services/payment.service';
-import {CategoryService} from '../../core/services/category.service';
 import {WoocommerceService} from '../../core/services/woocommerce.service';
 import * as Globals from '../../core/global';
 import { AddressPage } from '../address/address';
+
+const  $this = {
+  woocommerceService:null,
+  paymentService:null,
+  navCtrl:null,
+  ORDERID:null,
+  data:null,
+};
+
 
 declare var paytm : any;
 /**
@@ -47,7 +55,6 @@ export class CheckoutPage {
   payment_type: string;
 
   valid_offer;
-  discountPrice: string;
   coupon_code;
   appliedCoupon: boolean
 
@@ -58,6 +65,7 @@ export class CheckoutPage {
 
   order_id: number;
   order_total_price: number;
+  discountPrice:any;
  
 
   constructor(
@@ -68,7 +76,6 @@ export class CheckoutPage {
     private toastCtrl: ToastController,
     private formBuilder: FormBuilder,
     private paymentService: PaymentService,
-    private categoryService: CategoryService,
     private woocommerceService: WoocommerceService,
     private modalCtrl: ModalController,
     public events: Events,
@@ -87,13 +94,17 @@ export class CheckoutPage {
       });
 
       this.order = new OrderModule();
+
+      $this.navCtrl =  this.navCtrl;
+      $this.paymentService = this.paymentService;
+      $this.woocommerceService = this.woocommerceService;
+      // $this.updateOrder = this.updateOrder();
   
     }
 
   
   ionViewDidLoad() {
     this.menuCtrl.close();
-    console.log('ionViewDidLoad ProductdetailsPage');
     if (localStorage.getItem('isLoggedin')) {
       this.isLoggedin = true;
       this.logged_user_id = parseInt(localStorage.getItem('logged_user_id'));
@@ -156,7 +167,6 @@ export class CheckoutPage {
     var modalPage = this.modalCtrl.create(AddressPage,data);
     modalPage.onDidDismiss(() => {
       // Call the method to do whatever in your home.ts
-      console.log('Modal closed');
       this.getCustomerAddressList(localStorage.getItem('logged_user_id'));
     });
     modalPage.present();
@@ -204,7 +214,6 @@ export class CheckoutPage {
 
     this.paymentService.getPeaymentOption(getPeaymentOptionUrl).subscribe(
         res => {
-            console.log(res);
             this.payment_option_list = res;
             this.paymentOptions = [];
 
@@ -215,15 +224,23 @@ export class CheckoutPage {
                 }
 
             })
-            this.paymentOptions[1]['selected'] = true;
-            this.payment_type = this.paymentOptions[1].id;
-            console.log(this.payment_type);
+            this.paymentOptions[0]['selected'] = true;
+            this.payment_type = this.paymentOptions[0].id;
 
         },
         error => {
-            // console.log(error)
         }
     )
+  }
+
+  selectAddress(address,i)
+  {
+    this.selectedAddres = this.addressOptions[i];
+  }
+
+  selectPayment(payment,i)
+  {
+    this.payment_type = this.paymentOptions[i].id;
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -250,7 +267,7 @@ export class CheckoutPage {
   applyOffer() {
     if (this.cuponForm.valid) {
         this.valid_offer = this.offer_list.filter(x => x.code.toUpperCase() == this.cuponForm.value.coupon.toUpperCase())
-        console.log(this.valid_offer);
+
         if (this.valid_offer.length > 0) {
 
             this.coupon_code = this.valid_offer[0].code;
@@ -258,9 +275,11 @@ export class CheckoutPage {
             this.presentToast("Coupon code accepted");
         }
         else {
+            this.appliedCoupon = false;
             this.presentToast("Invalid Coupon code!");
         }
     } else {
+        this.appliedCoupon = false;
         this.markFormGroupTouched(this.cuponForm)
     }
   }
@@ -275,12 +294,12 @@ export class CheckoutPage {
   }
 
   orderPay() {
+
+
     if (this.address_selected == false) {
       this.presentToast("Please Select Shipping Address");
     }
     else {
-        console.log("aa");
-        console.log(this.payment_type);
         if (this.payment_type == 'wc_paytm') {
             this.order.payment_method = "wc_paytm";
             this.order.payment_method_title = "Paytm";
@@ -365,7 +384,6 @@ export class CheckoutPage {
         })
         this.order.line_items = all_details_data;
         
-        console.log(this.order);
         if (this.order_id == undefined) {
             this.spinnerDialog.show();
             let params = {}
@@ -408,26 +426,19 @@ export class CheckoutPage {
 
   getPaytmFormValue(amount: number, table_order_id: number) {
 
-    console.log(amount)
-    console.log(table_order_id)
     this.paymentService.paytmFormValue(amount, table_order_id, this.logged_user_id, this.logged_user_email).subscribe(
         res => {
-            console.log(res)
             this.paytmFormDetails = res.response;
             this.payViaPaytm();
         },
         error => {
-            console.log(error)
         }
     )
   }
 
   payViaPaytm() {
-    console.log(this.paytmFormDetails)
-
     var options = {
-      ENVIRONMENT : "staging", // environment details. staging for test environment & production for live environment
-      REQUEST_TYPE: this.paytmFormDetails.INDUSTRY_TYPE_ID, // You would get this details from paytm after opening an account with them
+      ENVIRONMENT : "production", // environment details. staging for test environment & production for live environment
       MID: this.paytmFormDetails.MID, // You would get this details from paytm after opening an account with them
       ORDER_ID: this.paytmFormDetails.ORDER_ID, // Unique ID for each transaction. This info is for you to track the transaction details
       CUST_ID: this.paytmFormDetails.CUST_ID, // Unique ID for your customer
@@ -442,25 +453,79 @@ export class CheckoutPage {
     paytm.startPayment(options, this.successCallback, this.failureCallback);
   }
 
+  //REQUEST_TYPE: "DEFAULT", // You would get this details from paytm after opening an account with them
+
 
   successCallback(response) {
-      console.log("AAAAAAAAAAAAA==>",response);
-      if (response.STATUS == "TXN_SUCCESS") {
-          var txn_id = response.TXNID;
-          var paymentmode = response.PAYMENTMODE;
-          // other details and function after payment transaction
-      } else {
-          // error code will be available in RESPCODE
-          // error list page https://docs.google.com/spreadsheets/d/1h63fSrAmEml3CYV-vBdHNErxjJjg8-YBSpNyZby6kkQ/edit#gid=2058248999
-          alert("Transaction Failed for reason " + response.RESPMSG);
+   
+      var ORDERID = response['ORDERID'];
+      var txn_id = response['TXNID'];
+
+      var txn_status;
+      if (response['STATUS'] == 'TXN_SUCCESS') {
+          txn_status = "completed";
       }
+      else if (response['STATUS'] == 'PROCESSING') {
+          txn_status = "processing";
+      }
+      else if (response['STATUS'] == 'TXN_FAILURE') {
+          txn_status = "failed";
+      }
+      else if (response['STATUS'] == 'PENDING') {
+          txn_status = "pending";
+      }
+
+      var data = {
+        status: txn_status,
+        meta_data: [
+            {
+                key: 'txn_id',
+                value: txn_id
+            },
+            {
+                key: 'bank_txn_id',
+                value: response['BANKTXNID']
+            },
+            {
+                key: 'checksumhash',
+                value: response['CHECKSUMHASH']
+            },
+            {
+                key: 'txn_status',
+                value: txn_status
+            },
+            {
+                key: 'paytm_response',
+                value: response
+            }
+        ]
+      }
+      $this.ORDERID =  ORDERID;
+      $this.data = data;
+
+      let params = {}
+      let url = Globals.apiEndpoint + 'orders/' + $this.ORDERID;
+      let orderUpdateUrl: string = $this.woocommerceService.authenticateApi('PUT', url, params);
+      $this.paymentService.updateOrder(orderUpdateUrl, $this.data).subscribe(
+          res => {
+
+            if(txn_status =="failed")
+            {
+              $this.navCtrl.push('OrderfailurePage',{id:$this.ORDERID});
+            }
+            else{
+              $this.navCtrl.push('OrdersuccessPage',{id:$this.ORDERID});
+            }
+          },
+          error => {
+          }
+      )
   }
 
   failureCallback(error) {
-    console.log("BBBBBBBBBBB==>",error);
       // error code will be available in RESCODE
       // error list page https://docs.google.com/spreadsheets/d/1h63fSrAmEml3CYV-vBdHNErxjJjg8-YBSpNyZby6kkQ/edit#gid=2058248999
-      alert("Transaction Failed for reason " + error.RESPMSG);
+      console.log("Transaction Failed for reason " + error.RESPMSG);
   }
 
   setCartData() {
@@ -481,10 +546,29 @@ export class CheckoutPage {
             this.offer_list = res;
         },
         error => {
-            console.log(error)
+           
         }
     )
   }
 
+  getDiscountPrice() {
+    if (this.valid_offer[0].discount_type == "percent") {
+        this.discountPrice =(this.total_item_price * this.valid_offer[0].amount) / 100;
+        return (this.discountPrice).toFixed(2);
+    }
+    else {
+
+        this.discountPrice = this.valid_offer.amount;
+        return (this.discountPrice).toFixed(2);
+    }
+  }
+
+  getPaidTotalAfterOffer() {
+    var totalAfterOffer = this.total_item_price - this.discountPrice;
+    return (totalAfterOffer).toFixed(2);
+
+  }
+
+  
 
 }

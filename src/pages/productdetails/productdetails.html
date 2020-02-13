@@ -12,6 +12,9 @@
             </ion-slide>
         </ion-slides>
     </div>
+    <div class="header-banner"  style="margin-top: 56px;" *ngIf="product_details.images.length==0">
+        <img src="assets/imgs/banner.png" class="slide-image" />
+    </div>
     <ion-grid class="product-details-page" style="padding-bottom: 50px;">
         <ion-row >
             <ion-col col-12 >
@@ -24,6 +27,8 @@
                         <span class="item-price" *ngIf="product_details.price"><i class="fa fa-inr"></i>{{product_details.price}}</span>
                         <span class="item-price-discount" *ngIf="product_details.regular_price > product_details.price"><i class="fa fa-inr"></i>{{product_details.regular_price}}</span>
                         <span class="item-price-discount-value" *ngIf="product_details.regular_price > product_details.price">( - {{getDiscount(product_details.price,product_details.regular_price)}} )</span>
+                        <span class="item-out-of-stock" *ngIf="stockQty==0 || stockStatus=='outofstock'">Out Of Stock</span>
+                        
                     </p>
                     <!-- <p style="padding-bottom: 5px;">
                         <span class="item-price" *ngIf="product_details.price"><i class="fa fa-inr"></i>{{product_details.price}}</span>
@@ -51,7 +56,7 @@
             </ion-row>
         </div>
         
-        <ion-row class="product-btn-sec" style="margin-bottom: 5px;" >
+        <ion-row class="product-btn-sec" style="margin-bottom: 5px;"  *ngIf="product_details.price!='' && stockQty!=0 && stockStatus!='outofstock' ">
             <ion-col col-6  style="border-right: 1px solid #cccccc;">
                 <div class="btn-add" *ngIf="!product_details.isCart" (click)="addToCart(product_details)"> Add <span class="span-right">+</span></div>
                 <div class="btn-add" *ngIf="product_details.isCart"><span class="span-left" (click)="decrement(product_details)">-</span> {{product_details.quantity}} <span class="span-right" (click)="increment(product_details)">+</span></div>
@@ -84,7 +89,3 @@
     </ion-grid>
     
 </ion-content>
-
-<ion-footer>
-    <page-footer></page-footer>
-</ion-footer>

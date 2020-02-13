@@ -479,6 +479,11 @@ ion-footer .quantity button {
             color: #FFFFFF;
             padding-left: 10px;
         }
+        .item-out-of-stock {
+            font-size: 15px;
+            color: #ff5050;
+            padding-left: 10px;
+        }
         .section-header
         {
             font-size: 15px;
@@ -698,6 +703,19 @@ ion-footer .quantity button {
         p{
             font-size: 24px;
             color: #007814;
+            margin: 0px;
+            font-weight: bold;
+        }
+    }
+    .order-failure-sec
+    {
+        background-color: #fff;
+        padding: 10px 5px;
+        margin-bottom: 5px;
+        border-radius: 3px;
+        p{
+            font-size: 24px;
+            color: #ff4f4f;
             margin: 0px;
             font-weight: bold;
         }
@@ -1023,9 +1041,9 @@ ion-footer .quantity button {
 
 .badge-md
 {
-    border-radius: 29px;
-    color: #DDA72A;
-    background-color: #ffff;
+    border-radius: 29px !important;;
+    color: #DDA72A !important;
+    background-color: #FFFFFF !important;;
 }
 ion-badge {
     padding: 2px 5px;

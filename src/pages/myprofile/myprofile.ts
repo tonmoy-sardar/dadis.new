@@ -4,8 +4,6 @@ import { IonicPage, NavController, NavParams, MenuController ,ModalController,Ev
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
 import {PaymentService} from '../../core/services/payment.service';
-import {CartService} from '../../core/services/cart.service';
-import {CategoryService} from '../../core/services/category.service';
 import {WoocommerceService} from '../../core/services/woocommerce.service';
 import * as Globals from '../../core/global';
 
@@ -44,9 +42,7 @@ export class MyprofilePage {
     public navParams: NavParams,
     public menuCtrl:MenuController,
     private paymentService: PaymentService,
-    private categoryService: CategoryService,
     private woocommerceService: WoocommerceService,
-    private cartService: CartService,
     private modalCtrl: ModalController,
     public events: Events
     ) {
@@ -56,8 +52,6 @@ export class MyprofilePage {
   
   ionViewDidLoad() {
     this.menuCtrl.close();
-    console.log('ionViewDidLoad MyprofilePage');
-
     if (localStorage.getItem('isLoggedin')) {
       this.isLoggedin = true;
       
@@ -73,6 +67,7 @@ export class MyprofilePage {
       this.logged_user_email='';
       this.logged_user_name= '';
       this.logged_user_contact_no='';
+      this.navCtrl.push('LoginPage');
     }
 
     this.getCustomerAddressList(this.logged_user_id);
@@ -114,7 +109,6 @@ export class MyprofilePage {
     var modalPage = this.modalCtrl.create(AddressPage,data);
     modalPage.onDidDismiss(() => {
       // Call the method to do whatever in your home.ts
-      console.log('Modal closed');
       this.getCustomerAddressList(localStorage.getItem('logged_user_id'));
     });
     modalPage.present();
@@ -124,7 +118,6 @@ export class MyprofilePage {
     var modalPage = this.modalCtrl.create(AddressPage,data);
     modalPage.onDidDismiss(() => {
       // Call the method to do whatever in your home.ts
-      console.log('Modal closed');
       this.getCustomerAddressList(localStorage.getItem('logged_user_id'));
     });
     modalPage.present();

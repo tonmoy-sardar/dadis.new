@@ -1,6 +1,5 @@
 import { Component,ViewChild, ElementRef} from '@angular/core';
 import { IonicPage, NavController, NavParams, MenuController,Events } from 'ionic-angular';
-import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { CallNumber } from '@ionic-native/call-number';
 
 
@@ -24,7 +23,6 @@ export class ContactusPage {
   map: any;
   
   constructor(
-    private spinnerDialog: SpinnerDialog,
     public navCtrl: NavController, 
     public navParams: NavParams,
     public menuCtrl:MenuController,
@@ -42,9 +40,6 @@ export class ContactusPage {
   }
 
   loadMap() {
-
-    console.log("asas");
-
     let latLng = new google.maps.LatLng(22.641780, 88.430730);
 
     let mapOptions = {
@@ -98,7 +93,6 @@ export class ContactusPage {
   }
 
   call(number) {
-    console.log(number)
     this.callNumber.callNumber(number, true);
   }
  

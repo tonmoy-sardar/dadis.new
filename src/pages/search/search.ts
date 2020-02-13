@@ -44,7 +44,6 @@ export class SearchPage {
   
   ionViewDidLoad() {
     this.menuCtrl.close();
-    console.log('ionViewDidLoad ProductdetailsPage');
     this.getProductList();
   }
 
@@ -75,8 +74,6 @@ export class SearchPage {
     this.spinnerDialog.show();
     this.categoryService.getProductListByCategoryId(productUrl).subscribe(
         res => {
-
-            console.log(res);
             this.product_list = res;
             this.all_product_list = res;
             this.spinnerDialog.hide();

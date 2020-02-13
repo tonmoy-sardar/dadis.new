@@ -13,10 +13,13 @@
                     <div class="product-text"> 
                         <h3>{{cart_data.product_name}}</h3>
                         <p style="padding-bottom: 5px;" [innerHTML]="cart_data.description"></p>
-                        <p style="padding-bottom: 10px;">
-                            <span class="item-price" *ngIf="cart_data.price"><i class="fa fa-inr"></i>{{cart_data.price}}</span>
-                            <span class="item-price-discount" *ngIf="cart_data.regular_price > cart_data.price"><i class="fa fa-inr"></i>{{cart_data.regular_price}}</span>
-                            <span class="item-price-discount-value" *ngIf="cart_data.regular_price > cart_data.price">( - {{getDiscount(cart_data.price,cart_data.regular_price)}} )</span>
+                        <p style="padding-bottom: 5px;">
+                            <span class="item-price" style="padding: 0px;" *ngIf="cart_data.price"><i class="fa fa-inr"></i>{{cart_data.price}}</span>
+                            <span class="item-price-discount" style="padding: 0px;" *ngIf="cart_data.regular_price > cart_data.price"><i class="fa fa-inr"></i>{{cart_data.regular_price}}</span>
+                            <span class="item-price-discount-value" style="padding: 0px;" *ngIf="cart_data.regular_price > cart_data.price">( - {{getDiscount(cart_data.price,cart_data.regular_price)}} )</span>
+                        </p>
+                        <p style="padding-bottom: 10px;" *ngIf="cart_data.size!=''">
+                            <span class="item-price" style="padding: 0px;">Size : {{cart_data.size}}</span>
                         </p>
                         <p style="padding-bottom: 5px;">Qty :{{cart_data.quantity}}</p>
                     </div>
@@ -36,7 +39,7 @@
                             {{address.shipping_first_name}}<br/>
                             {{address.shipping_address_1}}, {{address.shipping_city}}, {{address.shipping_state}}, {{address.shipping_postcode}}
                         </ion-label>
-                        <ion-radio [checked]="address.selected"></ion-radio>
+                        <ion-radio [checked]="address.selected" (ionSelect)="selectAddress(address,i)"></ion-radio>
                     </ion-item>
                 </ion-list>
             </form>
@@ -48,11 +51,11 @@
             </div>
             <form [formGroup]="paymentForm">
                 <ion-list radio-group radio-group formControlName="payment_id">
-                    <ion-item *ngFor="let payment of paymentOptions let i=index">
+                    <ion-item *ngFor="let payment of paymentOptions let i=index" >
                         <ion-label>
                             {{payment.title}}
                         </ion-label>
-                        <ion-radio  [checked]="payment.selected"></ion-radio>
+                        <ion-radio  [checked]="payment.selected" (ionSelect)="selectPayment(payment,i)"></ion-radio>
                     </ion-item>
                 </ion-list>
             </form>
@@ -67,10 +70,26 @@
                     <ion-col col-12  >
                         <ion-row >
                             <ion-col col-6>
-                                <p style="text-align: left">Subtotal</p>
+                                <p style="text-align: left; color:#ffffff">Subtotal</p>
                             </ion-col>
                             <ion-col col-6>
-                                <p style="text-align: right"><i class="fa fa-rupee"></i>{{total_item_price}}</p>
+                                <p style="text-align: right;color:#ffffff"><i class="fa fa-rupee"></i>{{total_item_price}}</p>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="appliedCoupon">
+                            <ion-col col-6>
+                                <p style="text-align: left;color:#ffffff">Discount</p>
+                            </ion-col>
+                            <ion-col col-6>
+                                <p style="text-align: right;color:#ffffff"><i class="fa fa-rupee"></i>{{getDiscountPrice()}}</p>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row *ngIf="appliedCoupon">
+                            <ion-col col-6>
+                                <p style="text-align: left;color:#ffffff">Total</p>
+                            </ion-col>
+                            <ion-col col-6>
+                                <p style="text-align: right;color:#ffffff"><i class="fa fa-rupee"></i>{{getPaidTotalAfterOffer()}}</p>
                             </ion-col>
                         </ion-row>
                     </ion-col>
@@ -111,29 +130,6 @@
             </ion-row>
         </div>
 
-        <!-- <ion-row *ngIf="customer_cart_data && customer_cart_data.length>0">
-            <ion-col col-12 >
-                <div class="check-out-sec">
-                    <p >GRAND TOTAL (INCLUDED TAX)</p>
-                    <p ><i class="fa fa-inr"></i>{{total_item_price}}</p>
-                    <button class="btn-checkout">CHECKOUT NOW</button>
-                </div>
-            </ion-col>
-        </ion-row>
-    
-        
-        <ion-row *ngIf="customer_cart_data && customer_cart_data.length==0">
-            <ion-col col-12  >
-                <div class="cart-no-data" style="text-align: center">
-                    <img src="assets/imgs/nocart.png" class="slide-image" style="text-align: center; height: 100px;" />
-                    <p>Sorry! Your cart is empty.</p>
-                </div>
-            </ion-col>
-        </ion-row> -->
     </ion-grid>
     
 </ion-content>
-
-<ion-footer>
-    <page-footer></page-footer>
-</ion-footer>

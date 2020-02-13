@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, MenuController, Events  } from 'ionic-angular';
 
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
-
-import {UserService} from '../../core/services/user.service';
 import {CategoryService} from '../../core/services/category.service';
 import {WoocommerceService} from '../../core/services/woocommerce.service';
 import * as Globals from '../../core/global';
@@ -24,13 +22,13 @@ export class HomePage {
   gallery_images: any = [];
   popular_product_list:any = [];
   category_list:any = [];
+  recently_view_product:any = [];
 
   constructor(
     private spinnerDialog: SpinnerDialog,
     public navCtrl: NavController, 
     public navParams: NavParams,
     public menuCtrl:MenuController,
-    private userService: UserService,
     private categoryService: CategoryService,
     private woocommerceService: WoocommerceService,
     public events: Events
@@ -38,13 +36,24 @@ export class HomePage {
 
       //this.userService.getPageNameStr('Home')
       this.events.publish('page-name', 'Home');
+
+
+      if (localStorage.getItem("recentlyView")) {
+        this.recently_view_product = JSON.parse(localStorage.getItem("recentlyView"));
+      }
+
+      this.events.subscribe('recently_view_change', (data) =>{
+        if(data=='true')
+        {      
+          this.getRecentlyViewProduct();
+        }
+        
+      });
+
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad HomePage');
     this.menuCtrl.close();
-
-
     this.getGalleryImageList();
     this.getPopularProductList();
     this.getCategoryList();
@@ -59,17 +68,23 @@ export class HomePage {
     this.spinnerDialog.show();
     this.categoryService.getGalleryImageList(imgGalleyUrl).subscribe(
         res => {
-
             this.gallery_images = res.data;
-            console.log(this.gallery_images);
             this.spinnerDialog.hide();
-           
         },
         error => {
-            console.log(error);
             this.spinnerDialog.hide();
         }
     )
+  }
+
+  getRecentlyViewProduct()
+  {
+    if (localStorage.getItem("recentlyView")) {
+      this.recently_view_product = JSON.parse(localStorage.getItem("recentlyView"));
+    }
+    else {
+      this.recently_view_product = [];
+    }
   }
 
   gotoCategory(category)
@@ -78,7 +93,6 @@ export class HomePage {
   }
   gotoProduct(product)
   {
-    console.log(product)
     this.navCtrl.push('ProductdetailsPage',{id:product.product_id,name:product.product_name});
   }
 
@@ -94,7 +108,6 @@ export class HomePage {
         this.categoryService.getPopularProductList(popularProductUrl).subscribe(
             res => {
                 this.popular_product_list = res.data;
-                console.log(this.popular_product_list);
                 this.spinnerDialog.hide();
             },
             error => {

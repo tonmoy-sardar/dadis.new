@@ -10,29 +10,31 @@ import { Geolocation} from '@ionic-native/geolocation';
 
 // core module
 import { CoreModule } from '../../src/core/core.module';
-import { AddressPage } from '../pages/address/address';
-import { FooterPage } from '../pages/include/footer/footer';
+import { AddressPageModule } from '../pages/address/address.module';
+import { Network } from '@ionic-native/network';
 
 @NgModule({
   declarations: [
     MyApp,
-    AddressPage,
+
   ],
   imports: [
     BrowserModule,
     CoreModule,
     IonicModule.forRoot(MyApp),
+    AddressPageModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AddressPage,
+
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Geolocation,
+    Network,
   ]
 })
 export class AppModule {}

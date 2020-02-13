@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, MenuController,Events } from 'ionic-angular';
-import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
 /**
  * Generated class for the Refund page.
@@ -19,7 +18,6 @@ export class RefundPage {
   visible: boolean;
   
   constructor(
-    private spinnerDialog: SpinnerDialog,
     public navCtrl: NavController, 
     public navParams: NavParams,
     public menuCtrl:MenuController,

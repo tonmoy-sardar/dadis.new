@@ -67,7 +67,6 @@ export class ForgotpasswordPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad HomePage');
     this.menuCtrl.close();
 
     this.showOtpSection= false;

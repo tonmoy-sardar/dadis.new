@@ -1,13 +1,8 @@
 import { Injectable , EventEmitter, Output} from "@angular/core";
 import {
   HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-  HttpParams,
 } from "@angular/common/http";
-import { Observable, BehaviorSubject, } from "rxjs";
-import { map, catchError } from "rxjs/operators";
-import * as Globals from '../global';
+import { Observable, } from "rxjs";
 
 @Injectable()
 export class UserService {
@@ -21,9 +16,7 @@ export class UserService {
   }
 
   getPageNameStr(pageName) {
-    console.log("aaaa")
-    console.log(pageName)
-    // this.getPageName.emit(pageName);
+
     this.getLoginStatus.emit(true);
   }
   userLogin(loginUserUrl,data): Observable<any> {

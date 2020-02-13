@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, MenuController,Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, MenuController,ToastController,Events } from 'ionic-angular';
 
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
-
-import {CategoryService} from '../../core/services/category.service';
-import {WoocommerceService} from '../../core/services/woocommerce.service';
-import * as Globals from '../../core/global';
 
 
 
@@ -35,8 +31,7 @@ export class CartPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     public menuCtrl:MenuController,
-    private categoryService: CategoryService,
-    private woocommerceService: WoocommerceService,
+    private toastCtrl: ToastController,
     public events: Events,
     ) {
       this.events.publish('page-name', 'Cart');
@@ -45,7 +40,6 @@ export class CartPage {
   
   ionViewDidLoad() {
     this.menuCtrl.close();
-    console.log('ionViewDidLoad CartPage');
     if (localStorage.getItem('isLoggedin')) {
       this.isLoggedin = true;
       this.logged_user_id = localStorage.getItem('logged_user_id')
@@ -64,8 +58,8 @@ export class CartPage {
     this.spinnerDialog.show();
     if (localStorage.getItem("cart")) {
       this.all_cart_data = JSON.parse(localStorage.getItem("cart"));
-      var filteredData = this.all_cart_data.filter(x => x.user_id == this.logged_user_id)
-      this.customer_cart_data = filteredData;
+      //var filteredData = this.all_cart_data.filter(x => x.user_id == this.logged_user_id)
+      this.customer_cart_data = this.all_cart_data;
       this.getTotalItemPrice();
       this.visible = true;
       this.spinnerDialog.hide();
@@ -85,11 +79,35 @@ export class CartPage {
 
   increment(i) {
       var qty = this.customer_cart_data[i].quantity;
-      this.customer_cart_data[i].quantity = qty + 1;
-      var index = this.all_cart_data.findIndex(x => x.user_id == this.logged_user_id && x.product_id == this.customer_cart_data[i].product_id);
+      var index;
+      if(this.logged_user_id)
+      {
+         index = this.all_cart_data.findIndex(x => x.user_id == this.logged_user_id && x.product_id == this.customer_cart_data[i].product_id);
+      }
+      else{
+         index = this.all_cart_data.findIndex(x => x.product_id == this.customer_cart_data[i].product_id);
+      }
+      
       if (index != -1) {
+
+        if(this.all_cart_data[index].stockQty!=null)
+        {
+          if(qty<this.all_cart_data[index].stockQty)
+          {
+            this.all_cart_data[index].quantity = qty + 1;
+            this.customer_cart_data[i].quantity = qty + 1;
+            this.setCartData();
+          }
+          else{
+            this.presentToast("Sorry! You can not add more than "+this.all_cart_data[index].stockQty);
+          }
+        }
+        else{
           this.all_cart_data[index].quantity = qty + 1;
+          this.customer_cart_data[i].quantity = qty + 1;
           this.setCartData()
+        }
+        
       }
   }
 
@@ -136,8 +154,27 @@ export class CartPage {
 
     gotoPage(routePage)
     {
-      console.log(this.isLoggedin);
       this.navCtrl.push(routePage);
+    }
+
+    gotoCheckOut(routePage)
+    {
+      if(this.logged_user_id)
+      {
+        this.navCtrl.push(routePage);
+      }
+      else{
+        this.navCtrl.push("LoginPage");
+      }
+    }
+
+    presentToast(msg) {
+      const toast = this.toastCtrl.create({
+        message: msg,
+        duration: 3000,
+        position: 'top'
+      });
+      toast.present();
     }
 
 }

@@ -1,11 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform , Events } from 'ionic-angular';
+import { Nav, Platform , Events, ToastController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Geolocation } from '@ionic-native/geolocation';
 
 import { UserService } from '../core/services/user.service';
-import { CartService } from '../core/services/cart.service';
 import { CategoryService } from '../core/services/category.service';
 import { WoocommerceService } from '../core/services/woocommerce.service';
 
@@ -39,8 +38,8 @@ export class MyApp {
     private categoryService: CategoryService,
     private woocommerceService: WoocommerceService,
     private userService: UserService,
-    private cartService: CartService,
-    public events: Events
+    public events: Events,
+    private toastCtrl: ToastController,
 
   ) {
 
@@ -48,10 +47,7 @@ export class MyApp {
       this.pageName = data;
     });
 
-  
-
     this.userService.getLoginStatus.subscribe(status => {
-      console.log(status)
       this.changeStatus(status)
     });
     
@@ -67,8 +63,19 @@ export class MyApp {
       this.totalCart = JSON.parse(localStorage.getItem("cart")).length;
     }
 
+    window.addEventListener('offline', () => {
+      this.presentToast("Sorry! No Internet Connection.");
+    });
+
+    window.addEventListener('online', () => {
+      this.presentToast("Internet Connection connected. ");
+    });
+
+    
     this.initializeApp();
   }
+
+  
 
   initializeApp() {
     this.platform.ready().then(() => {
@@ -76,13 +83,11 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       //this.rootPage = '';
       this.geolocation.getCurrentPosition().then((position) => {
-        console.log("Data==>", position);
 
         localStorage.setItem('lat', position.coords.latitude.toString())
         localStorage.setItem('lng', position.coords.longitude.toString())
 
       }, (err) => {
-        console.log('Error getting location', err);
       });
       this.nav.setRoot('HomePage');
 
@@ -97,7 +102,6 @@ export class MyApp {
 
  
   private changeStatus(status: boolean) {
-    console.log("B");
     if (status) {
       this.loadUserInfo();
     }
@@ -135,12 +139,10 @@ export class MyApp {
   }
 
   gotoPage(routePage) {
-    console.log(routePage);
     this.nav.push(routePage);
   }
 
   gotoCategory(category) {
-    console.log(category);
     //this.nav.push(routePage);
     this.nav.push('ProductPage', { id: category.id, name: category.name });
   }
@@ -177,5 +179,13 @@ export class MyApp {
     }
   }
 
+  presentToast(msg) {
+    const toast = this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'top'
+    });
+    toast.present();
+  }
 
 }

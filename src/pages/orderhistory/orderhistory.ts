@@ -4,7 +4,6 @@ import { IonicPage, NavController, NavParams, MenuController,Events } from 'ioni
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
 import {PaymentService} from '../../core/services/payment.service';
-import {CategoryService} from '../../core/services/category.service';
 import {WoocommerceService} from '../../core/services/woocommerce.service';
 import * as Globals from '../../core/global';
 
@@ -37,7 +36,6 @@ export class OrderhistoryPage {
     public navParams: NavParams,
     public menuCtrl:MenuController,
     private paymentService: PaymentService,
-    private categoryService: CategoryService,
     private woocommerceService: WoocommerceService,
     public events: Events,
     ) {
@@ -47,7 +45,6 @@ export class OrderhistoryPage {
   
   ionViewDidLoad() {
     this.menuCtrl.close();
-    console.log('ionViewDidLoad OrderhistoryPage');
     if (localStorage.getItem('isLoggedin')) {
       this.isLoggedin = true;
       this.logged_user_id = localStorage.getItem('logged_user_id');

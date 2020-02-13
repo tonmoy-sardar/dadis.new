@@ -1,18 +1,16 @@
-import { NgModule ,CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders} from '@angular/core';
+import { NgModule ,CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
 import { ApiProvider } from '../core/api/api';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as ionicGalleryModal from 'ionic-gallery-modal';
-import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { CallNumber } from '@ionic-native/call-number';
 
 
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 //import { DocumentViewer } from '@ionic-native/document-viewer/ngx';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
-import { FooterPage } from '../pages/include/footer/footer';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 
@@ -28,7 +26,7 @@ import { CartService } from './services/cart.service'
 
 @NgModule({
   declarations: [
-    FooterPage,
+
   ],
   imports: [
     // Ionic2RatingModule 
@@ -42,7 +40,6 @@ import { CartService } from './services/cart.service'
     // Ionic2RatingModule 
     FormsModule,
     ReactiveFormsModule,
-    FooterPage,
   ],
   
   providers: [

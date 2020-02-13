@@ -45,7 +45,6 @@ export class ProductPage {
   
   ionViewDidLoad() {
     this.menuCtrl.close();
-    console.log('ionViewDidLoad ProductdetailsPage');
     this.category_name = this.navParams.get('name');
     this.category_id = this.navParams.get('id');
     this.getProductListByCategoryId(this.category_id);
@@ -53,7 +52,6 @@ export class ProductPage {
 
 
   stpSelect() {
-    console.log(this.sort_option);
     var sort_option = this.sort_option.toString()
     if (sort_option == "Price - Low to High") {
         //this.addSubCategory(category.id)
@@ -118,8 +116,6 @@ export class ProductPage {
     this.spinnerDialog.show();
     this.categoryService.getProductListByCategoryId(productUrl).subscribe(
         res => {
-
-            console.log(res);
             this.product_list = res;
             this.spinnerDialog.hide();
             this.visible = true

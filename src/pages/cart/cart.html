@@ -13,10 +13,18 @@
                     <div class="product-text"> 
                         <h3>{{cart_data.product_name}}</h3>
                         <p style="padding-bottom: 5px;" [innerHTML]="cart_data.description"></p>
-                        <p style="padding-bottom: 10px;">
-                            <span class="item-price" *ngIf="cart_data.price"><i class="fa fa-inr"></i>{{cart_data.price}}</span>
-                            <span class="item-price-discount" *ngIf="cart_data.regular_price > cart_data.price"><i class="fa fa-inr"></i>{{cart_data.regular_price}}</span>
-                            <span class="item-price-discount-value" *ngIf="cart_data.regular_price > cart_data.price">( - {{getDiscount(cart_data.price,cart_data.regular_price)}} )</span>
+                        <p style="padding-bottom: 10px;" *ngIf="cart_data.size==''">
+                            <span class="item-price" style="padding: 0px;" *ngIf="cart_data.price"><i class="fa fa-inr"></i>{{cart_data.price}}</span>
+                            <span class="item-price-discount" style="padding: 0px;"*ngIf="cart_data.regular_price > cart_data.price"><i class="fa fa-inr"></i>{{cart_data.regular_price}}</span>
+                            <span class="item-price-discount-value" style="padding: 0px;" *ngIf="cart_data.regular_price > cart_data.price">( - {{getDiscount(cart_data.price,cart_data.regular_price)}} )</span>
+                        </p>
+                        <p style="padding-bottom:5px;" *ngIf="cart_data.size!=''">
+                            <span class="item-price" style="padding: 0px;"><i class="fa fa-inr"></i>{{cart_data.price}}</span>
+                            <span class="item-price-discount" style="padding: 0px;" *ngIf="cart_data.regular_price > cart_data.price"><i class="fa fa-inr"></i>{{cart_data.regular_price}}</span>
+                            <span class="item-price-discount-value" style="padding: 0px;" *ngIf="cart_data.regular_price > cart_data.price">( - {{getDiscount(cart_data.price,cart_data.regular_price)}} )</span>
+                        </p>
+                        <p style="padding-bottom: 10px;" *ngIf="cart_data.size!=''">
+                            <span class="item-price" style="padding: 0px;">Size : {{cart_data.size}}</span>
                         </p>
                         <div style="width: 100%">
                                 <div style="padding-bottom: 5px;float: left;"><p  class="btn-add"><span class="span-left" (click)="decrement(i)">-</span> {{cart_data.quantity}} <span class="span-right" (click)="increment(i)">+</span></p></div>
@@ -38,7 +46,7 @@
                     <p >GRAND TOTAL (INCLUDED TAX)</p>
                     <p ><i class="fa fa-inr"></i>{{total_item_price}}</p>
                     <!-- <button class="btn-checkout">CHECKOUT NOW</button> -->
-                    <button class="btn-checkout" (click)="gotoPage('CheckoutPage')">CHECKOUT NOW</button>
+                    <button class="btn-checkout" (click)="gotoCheckOut('CheckoutPage')">CHECKOUT NOW</button>
                 </div>
             </ion-col>
         </ion-row>
@@ -55,7 +63,3 @@
     </ion-grid>
    
 </ion-content>
-
-<ion-footer>
-    <page-footer></page-footer>
-</ion-footer>
